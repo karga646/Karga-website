@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aviso de Privacidad — Karga</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --border: #2a2a2a;
+      --accent: #E03333;
+      --text: #e8e8e8;
+      --muted: #888;
+      --radius: 12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.7;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 3rem 0 2.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+
+    .logo {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--accent);
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 2.5rem 0 0.8rem;
+    }
+
+    p { margin-bottom: 1rem; color: var(--text); }
+
+    ul {
+      list-style: none;
+      margin-bottom: 1rem;
+      padding-left: 0;
+    }
+
+    ul li {
+      padding: 0.45rem 0 0.45rem 1.4rem;
+      position: relative;
+      color: var(--text);
+    }
+
+    ul li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      margin: 1.5rem 0;
+    }
+
+    .card strong {
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.3rem;
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 99px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .consent-box {
+      background: #1a1f07;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      margin: 2rem 0;
+    }
+
+    .consent-box p {
+      margin: 0;
+      font-size: 0.97rem;
+    }
+
+    footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 1.5rem; }
+      .card { padding: 1rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <div class="logo">KARGA</div>
+      <p>karga.fit</p>
+    </header>
+
+    <h1>Aviso de Privacidad</h1>
+    <p style="color: var(--muted); font-size: 0.88rem;">Última actualización: abril de 2025</p>
+
+    <!-- Consentimiento -->
+    <div class="consent-box">
+      <p>
+        <strong style="color: var(--accent); display: inline;">Importante:</strong>
+        Al utilizar la aplicación Karga, el usuario acepta y autoriza el uso de sus datos personales y de salud
+        con el único propósito de brindarle un plan de entrenamiento y un conteo de calorías personalizado.
+        Si no estás de acuerdo con este aviso, te pedimos que no utilices la aplicación.
+      </p>
+    </div>
+
+    <!-- Responsable -->
+    <h2>1. Responsable del tratamiento</h2>
+    <p>
+      Karga es responsable del tratamiento de los datos personales que recopila a través de su aplicación móvil
+      disponible en iOS y Android. Para cualquier duda o solicitud puedes contactarnos en
+      <a href="mailto:kargaoficial@gmail.com" style="color: var(--accent);">kargaoficial@gmail.com</a>.
+    </p>
+
+    <!-- Datos que recolectamos -->
+    <h2>2. Datos que recolectamos</h2>
+    <p>Para ofrecerte una experiencia completamente personalizada, Karga recopila las siguientes categorías de datos:</p>
+
+    <div class="card">
+      <strong>Identidad y acceso</strong>
+      <ul>
+        <li>Correo electrónico y nombre (a través de Google al iniciar sesión)</li>
+        <li>Identificador único de usuario (generado por nuestra plataforma)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <strong>Perfil físico <span class="badge">Salud</span></strong>
+      <ul>
+        <li>Nombre, edad y sexo</li>
+        <li>Peso y estatura</li>
+        <li>Porcentaje de grasa corporal (sólo si tu objetivo es reducción de grasa)</li>
+        <li>Masa magra e índice FFMI (calculados a partir de los datos anteriores)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <strong>Actividad y estilo de vida</strong>
+      <ul>
+        <li>Nivel de actividad diaria</li>
+        <li>Nivel de experiencia en el gimnasio</li>
+        <li>Frecuencia semanal de entrenamiento</li>
+        <li>Historial de cardio (para objetivo de pérdida de grasa)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <strong>Objetivos y nutrición</strong>
+      <ul>
+        <li>Objetivo principal (ganancia muscular o reducción de grasa)</li>
+        <li>Metas calóricas diarias</li>
+        <li>Distribución de macronutrientes (proteínas, carbohidratos y grasas)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <strong>Entrenamiento y seguimiento</strong>
+      <ul>
+        <li>Días y rutinas de entrenamiento personalizadas</li>
+        <li>Ejercicios, series, repeticiones y pesos registrados por sesión</li>
+        <li>Historial de sesiones y progreso físico (check-ins periódicos)</li>
+        <li>Actualizaciones de peso, estatura y grasa corporal a lo largo del tiempo</li>
+      </ul>
+    </div>
+
+    <!-- Para qué usamos los datos -->
+    <h2>3. Finalidad del uso de tus datos</h2>
+    <p>Todos los datos que recopilamos se utilizan <strong>exclusivamente</strong> para los siguientes fines:</p>
+    <ul>
+      <li>Calcular tu gasto calórico total diario (TDEE) y establecer metas nutricionales personalizadas</li>
+      <li>Generar y ajustar tu plan de entrenamiento según tu nivel, objetivo y progreso</li>
+      <li>Hacer seguimiento periódico de tu evolución física y adaptar las recomendaciones</li>
+      <li>Clasificarte en un perfil de entrenamiento para optimizar tus resultados</li>
+      <li>Garantizar el correcto funcionamiento e identidad dentro de la aplicación</li>
+    </ul>
+
+    <p>
+      <strong>No vendemos, compartimos ni cedemos tus datos personales a terceros</strong> con fines
+      comerciales, publicitarios ni de ninguna otra índole ajena a los mencionados.
+    </p>
+
+    <!-- Consentimiento del usuario -->
+    <h2>4. Consentimiento</h2>
+    <p>
+      Al registrarte y usar Karga, otorgas tu consentimiento expreso para que tratemos los datos descritos
+      en este aviso con las finalidades señaladas. Este consentimiento es necesario para que la aplicación
+      funcione y pueda ofrecerte un servicio personalizado.
+    </p>
+
+    <!-- Almacenamiento -->
+    <h2>5. Almacenamiento y seguridad</h2>
+    <p>
+      Tus datos se almacenan de forma segura en servidores de <strong>Supabase</strong> (infraestructura basada en
+      PostgreSQL con cifrado en tránsito y en reposo). La autenticación se gestiona a través de
+      <strong>Google OAuth</strong>. Adicionalmente, algunos datos se guardan localmente en tu dispositivo para
+      permitir el funcionamiento sin conexión.
+    </p>
+    <p>
+      Aplicamos medidas técnicas y organizativas razonables para proteger tu información contra accesos
+      no autorizados, pérdida o alteración.
+    </p>
+
+    <!-- Derechos -->
+    <h2>6. Tus derechos</h2>
+    <p>Tienes derecho a:</p>
+    <ul>
+      <li>Acceder a los datos que tenemos sobre ti</li>
+      <li>Solicitar la corrección de datos inexactos</li>
+      <li>Solicitar la eliminación de tu cuenta y todos tus datos</li>
+      <li>Revocar tu consentimiento en cualquier momento (lo que implicará dejar de usar la app)</li>
+    </ul>
+    <p>
+      Para ejercer cualquiera de estos derechos, escríbenos a
+      <a href="mailto:kargaoficial@gmail.com" style="color: var(--accent);">kargaoficial@gmail.com</a>.
+    </p>
+
+    <!-- Cambios -->
+    <h2>7. Cambios a este aviso</h2>
+    <p>
+      Podemos actualizar este aviso de privacidad ocasionalmente. Cuando lo hagamos, actualizaremos la
+      fecha en la parte superior de esta página. Te recomendamos revisarlo periódicamente.
+    </p>
+
+    <footer>
+      <p>© 2025 Karga. Todos los derechos reservados.</p>
+      <p style="margin-top: 0.4rem;"><a href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a></p>
+    </footer>
+
+  </div>
+</body>
+</html>
