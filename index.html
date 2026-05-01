@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aviso de Privacidad — Karga</title>
+  <title>Karga</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -32,9 +32,7 @@
 
     header {
       text-align: center;
-      padding: 3rem 0 2.5rem;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 3rem;
+      padding: 3rem 0 2rem;
     }
 
     .logo {
@@ -44,11 +42,48 @@
       color: var(--accent);
     }
 
-    header p {
+    header > p {
       color: var(--muted);
       margin-top: 0.4rem;
       font-size: 0.9rem;
     }
+
+    nav {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin: 1.8rem 0 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.65rem 1.2rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s, border-color 0.15s;
+      font-family: inherit;
+    }
+
+    nav button:hover { color: var(--text); }
+
+    nav button.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .section {
+      display: none;
+      padding-top: 3rem;
+    }
+
+    .section.active { display: block; }
 
     h1 {
       font-size: 1.9rem;
@@ -127,6 +162,71 @@
       font-size: 0.97rem;
     }
 
+    /* Contact section */
+    .contact-hero {
+      text-align: center;
+      padding: 2rem 0 2.5rem;
+    }
+
+    .contact-hero h1 {
+      margin-bottom: 0.7rem;
+    }
+
+    .contact-hero p {
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 2rem;
+    }
+
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .contact-card .icon {
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .contact-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .contact-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .btn-email {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0.75rem 1.8rem;
+      border-radius: 99px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .btn-email:hover { opacity: 0.85; }
+
+    .contact-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 1.4rem;
+    }
+
     footer {
       margin-top: 4rem;
       padding-top: 2rem;
@@ -144,6 +244,7 @@
     @media (max-width: 480px) {
       h1 { font-size: 1.5rem; }
       .card { padding: 1rem 1.2rem; }
+      .contact-card { padding: 1.5rem 1.2rem; }
     }
   </style>
 </head>
@@ -153,10 +254,17 @@
     <header>
       <div class="logo">KARGA</div>
       <p>karga.fit</p>
+      <nav>
+        <button class="active" onclick="showSection('privacy', this)">Aviso de Privacidad</button>
+        <button onclick="showSection('contact', this)">Contacto</button>
+      </nav>
     </header>
 
+    <!-- Aviso de Privacidad -->
+    <div id="privacy" class="section active">
+
     <h1>Aviso de Privacidad</h1>
-    <p style="color: var(--muted); font-size: 0.88rem;">Última actualización: abril de 2025</p>
+    <p style="color: var(--muted); font-size: 0.88rem;">Última actualización: abril de 2026</p>
 
     <!-- Consentimiento -->
     <div class="consent-box">
@@ -290,6 +398,41 @@
       <p style="margin-top: 0.4rem;"><a href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a></p>
     </footer>
 
+    </div><!-- /privacy -->
+
+    <!-- Contacto -->
+    <div id="contact" class="section">
+
+      <div class="contact-hero">
+        <h1>Contáctanos</h1>
+        <p>¿Tienes dudas, sugerencias o necesitas ayuda? Escríbenos y te respondemos a la brevedad.</p>
+      </div>
+
+      <div class="contact-card">
+        <div class="icon">✉️</div>
+        <h3>Correo electrónico</h3>
+        <p>Disponible para cualquier consulta sobre la app, tu cuenta o privacidad.</p>
+        <a class="btn-email" href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a>
+      </div>
+
+      <p class="contact-note">Respondemos en un plazo de 1 a 3 días hábiles.</p>
+
+      <footer>
+        <p>© 2025 Karga. Todos los derechos reservados.</p>
+        <p style="margin-top: 0.4rem;"><a href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a></p>
+      </footer>
+
+    </div><!-- /contact -->
+
   </div>
+
+  <script>
+    function showSection(id, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
 </body>
 </html>
