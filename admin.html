@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Soporte — Karga</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --surface-2: #1e1e1e;
+      --border: #2a2a2a;
+      --accent: #E03333;
+      --text: #e8e8e8;
+      --muted: #888;
+      --radius: 12px;
+      --blue: #0A84FF;
+      --green: #34C759;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── Login screen ── */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 360px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+    }
+
+    .login-box .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 0.3rem;
+    }
+
+    .login-box .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 1.6rem;
+    }
+
+    input[type="email"], input[type="password"], textarea {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.7rem 0.8rem;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      margin-bottom: 0.8rem;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.75rem;
+    }
+
+    .btn-primary:disabled { opacity: 0.5; cursor: default; }
+
+    .error-msg {
+      color: var(--accent);
+      font-size: 0.85rem;
+      margin-bottom: 0.8rem;
+      text-align: center;
+    }
+
+    /* ── Dashboard ── */
+    .hidden { display: none !important; }
+
+    header.topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header.topbar .logo {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--accent);
+    }
+
+    .signout-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+    }
+
+    .signout-btn:hover { color: var(--text); border-color: var(--text); }
+
+    main {
+      padding: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .board { grid-template-columns: 1fr; }
+    }
+
+    .column h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .column h2 .count {
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+    }
+
+    .col-abierto h2 { color: var(--blue); }
+    .col-respondido h2 { color: var(--green); }
+    .col-cerrado h2 { color: var(--muted); }
+
+    .cards { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.9rem;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .card:hover { border-color: var(--accent); }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-type {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--accent);
+    }
+
+    .card-date {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .card-user {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+    }
+
+    .card-msg {
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .unread-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-left: 0.4rem;
+    }
+
+    .empty-col {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 1.5rem 0;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+    }
+
+    /* ── Ticket modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 50;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 560px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+
+    .modal-header h3 { font-size: 1.05rem; font-weight: 700; }
+    .modal-header .meta { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+    .close-btn {
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.3rem;
+      line-height: 1;
+      padding: 0.1rem 0.4rem;
+    }
+    .close-btn:hover { color: var(--text); }
+
+    .thread {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .bubble {
+      max-width: 85%;
+      padding: 0.6rem 0.85rem;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      white-space: pre-wrap;
+    }
+
+    .bubble.user {
+      align-self: flex-start;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+    }
+
+    .bubble.admin {
+      align-self: flex-end;
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .bubble .ts {
+      display: block;
+      font-size: 0.68rem;
+      opacity: 0.6;
+      margin-top: 0.25rem;
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--border);
+      padding: 0.8rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .modal-footer .actions {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .btn-secondary {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 0.9rem;
+      font-size: 0.85rem;
+    }
+    .btn-secondary:hover { border-color: var(--text); }
+
+    .reply-row {
+      display: flex;
+      gap: 0.6rem;
+    }
+    .reply-row textarea {
+      margin-bottom: 0;
+      resize: vertical;
+      min-height: 44px;
+    }
+
+    .loading {
+      text-align: center;
+      color: var(--muted);
+      padding: 3rem 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Login ── -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-box">
+      <div class="logo">KARGA</div>
+      <div class="subtitle">Panel de soporte — acceso restringido</div>
+      <div id="login-error" class="error-msg hidden"></div>
+      <input id="login-email" type="email" placeholder="Correo" autocomplete="username" />
+      <input id="login-password" type="password" placeholder="Contraseña" autocomplete="current-password" />
+      <button id="login-btn" class="btn-primary">Iniciar sesión</button>
+    </div>
+  </div>
+
+  <!-- ── Dashboard ── -->
+  <div id="dashboard" class="hidden">
+    <header class="topbar">
+      <div class="logo">KARGA · Soporte</div>
+      <button id="signout-btn" class="signout-btn">Cerrar sesión</button>
+    </header>
+    <main>
+      <div id="board-loading" class="loading">Cargando tickets…</div>
+      <div id="board" class="board hidden">
+        <section class="column col-abierto">
+          <h2>Sin atender <span id="count-abierto" class="count">0</span></h2>
+          <div id="cards-abierto" class="cards"></div>
+        </section>
+        <section class="column col-respondido">
+          <h2>En proceso <span id="count-respondido" class="count">0</span></h2>
+          <div id="cards-respondido" class="cards"></div>
+        </section>
+        <section class="column col-cerrado">
+          <h2>Resueltas <span id="count-cerrado" class="count">0</span></h2>
+          <div id="cards-cerrado" class="cards"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ── Ticket modal ── -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3 id="modal-title">Ticket</h3>
+          <div id="modal-meta" class="meta"></div>
+        </div>
+        <button id="modal-close" class="close-btn">&times;</button>
+      </div>
+      <div id="modal-thread" class="thread"></div>
+      <div class="modal-footer">
+        <div class="reply-row">
+          <textarea id="reply-text" placeholder="Escribe tu respuesta…"></textarea>
+          <button id="reply-send" class="btn-secondary">Enviar</button>
+        </div>
+        <div class="actions">
+          <button id="toggle-status-btn" class="btn-secondary"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://ugnbxdszrraxkzabbfns.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnbmJ4ZHN6cnJheGt6YWJiZm5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NzI1MjksImV4cCI6MjA5MDE0ODUyOX0.zKeqE2buRsbfFXOhnfy9aN9XR7La0uza3PoP6lBPxsQ';
+
+    // Only this account is allowed in (also enforced server-side via RLS —
+    // this check just gives a clean error message in the UI).
+    const ADMIN_ID = '18cdcb5d-71c6-4bbf-869e-7f8593ae02c6';
+
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const TYPE_LABELS = { duda: 'Duda', problema: 'Problema', sugerencia: 'Sugerencia' };
+
+    const loginScreen = document.getElementById('login-screen');
+    const dashboard = document.getElementById('dashboard');
+    const loginError = document.getElementById('login-error');
+
+    function showError(msg) {
+      loginError.textContent = msg;
+      loginError.classList.remove('hidden');
+    }
+
+    function fmtDate(iso) {
+      return new Date(iso).toLocaleString('es-ES', {
+        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+      });
+    }
+
+    // ── Auth ──────────────────────────────────────────────────────────────────
+
+    document.getElementById('login-btn').addEventListener('click', async () => {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      if (!email || !password) return;
+
+      loginError.classList.add('hidden');
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true;
+      btn.textContent = 'Entrando…';
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      btn.disabled = false;
+      btn.textContent = 'Iniciar sesión';
+
+      if (error) {
+        showError('Credenciales incorrectas.');
+        return;
+      }
+
+      if (data.user?.id !== ADMIN_ID) {
+        showError('Esta cuenta no tiene acceso al panel de soporte.');
+        await sb.auth.signOut();
+        return;
+      }
+
+      enterDashboard();
+    });
+
+    document.getElementById('signout-btn').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      dashboard.classList.add('hidden');
+      loginScreen.classList.remove('hidden');
+    });
+
+    async function init() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user?.id === ADMIN_ID) {
+        enterDashboard();
+      }
+    }
+
+    function enterDashboard() {
+      loginScreen.classList.add('hidden');
+      dashboard.classList.remove('hidden');
+      loadTickets();
+    }
+
+    // ── Tickets board ─────────────────────────────────────────────────────────
+
+    let ticketsById = {};
+
+    async function loadTickets() {
+      document.getElementById('board-loading').classList.remove('hidden');
+      document.getElementById('board').classList.add('hidden');
+
+      const { data: tickets, error } = await sb
+        .from('feedback')
+        .select('id, user_id, type, message, status, unread_by_user, last_message_at, created_at, profiles(name)')
+        .order('last_message_at', { ascending: false });
+
+      if (error) {
+        document.getElementById('board-loading').textContent = 'Error al cargar tickets.';
+        return;
+      }
+
+      ticketsById = {};
+      tickets.forEach(t => ticketsById[t.id] = t);
+
+      const groups = { abierto: [], respondido: [], cerrado: [] };
+      tickets.forEach(t => groups[t.status]?.push(t));
+
+      for (const status of ['abierto', 'respondido', 'cerrado']) {
+        const container = document.getElementById(`cards-${status}`);
+        document.getElementById(`count-${status}`).textContent = groups[status].length;
+        container.innerHTML = '';
+        if (groups[status].length === 0) {
+          container.innerHTML = '<div class="empty-col">Nada por aquí</div>';
+          continue;
+        }
+        for (const t of groups[status]) {
+          container.appendChild(renderCard(t));
+        }
+      }
+
+      document.getElementById('board-loading').classList.add('hidden');
+      document.getElementById('board').classList.remove('hidden');
+    }
+
+    function renderCard(t) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.addEventListener('click', () => openTicket(t.id));
+
+      const userName = t.profiles?.name || 'Usuario sin nombre';
+
+      card.innerHTML = `
+        <div class="card-top">
+          <span class="card-type">${TYPE_LABELS[t.type] || t.type}</span>
+          <span class="card-date">${fmtDate(t.last_message_at)}</span>
+        </div>
+        <div class="card-user">${escapeHtml(userName)}${t.unread_by_user ? '' : ''}</div>
+        <div class="card-msg">${escapeHtml(t.message)}</div>
+      `;
+      return card;
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str ?? '';
+      return div.innerHTML;
+    }
+
+    // ── Ticket modal ──────────────────────────────────────────────────────────
+
+    let currentTicketId = null;
+
+    async function openTicket(id) {
+      currentTicketId = id;
+      const t = ticketsById[id];
+
+      document.getElementById('modal-title').textContent = TYPE_LABELS[t.type] || t.type;
+      document.getElementById('modal-meta').textContent =
+        `${t.profiles?.name || 'Usuario sin nombre'} · ${fmtDate(t.created_at)}`;
+
+      const toggleBtn = document.getElementById('toggle-status-btn');
+      toggleBtn.textContent = t.status === 'cerrado' ? 'Reabrir ticket' : 'Marcar como resuelto';
+
+      document.getElementById('modal-thread').innerHTML = '<div class="loading">Cargando…</div>';
+      document.getElementById('modal-overlay').classList.remove('hidden');
+      document.getElementById('reply-text').value = '';
+
+      await loadThread(t);
+    }
+
+    async function loadThread(t) {
+      const { data: messages, error } = await sb
+        .from('feedback_messages')
+        .select('id, sender, message, created_at')
+        .eq('feedback_id', t.id)
+        .order('created_at', { ascending: true });
+
+      const thread = document.getElementById('modal-thread');
+      thread.innerHTML = '';
+
+      // Original ticket message first
+      thread.appendChild(renderBubble('user', t.message, t.created_at));
+
+      if (!error) {
+        for (const m of messages) {
+          thread.appendChild(renderBubble(m.sender, m.message, m.created_at));
+        }
+      }
+
+      thread.scrollTop = thread.scrollHeight;
+
+      // Mark as read on the user's side once the admin opens it
+      if (t.unread_by_user) {
+        await sb.from('feedback').update({ unread_by_user: false }).eq('id', t.id);
+        t.unread_by_user = false;
+      }
+    }
+
+    function renderBubble(sender, message, createdAt) {
+      const div = document.createElement('div');
+      div.className = `bubble ${sender === 'admin' ? 'admin' : 'user'}`;
+      div.innerHTML = `${escapeHtml(message)}<span class="ts">${fmtDate(createdAt)}</span>`;
+      return div;
+    }
+
+    document.getElementById('modal-close').addEventListener('click', () => {
+      document.getElementById('modal-overlay').classList.add('hidden');
+      currentTicketId = null;
+    });
+
+    document.getElementById('reply-send').addEventListener('click', async () => {
+      const text = document.getElementById('reply-text').value.trim();
+      if (!text || !currentTicketId) return;
+
+      const btn = document.getElementById('reply-send');
+      btn.disabled = true;
+
+      const { error } = await sb.from('feedback_messages').insert({
+        feedback_id: currentTicketId,
+        sender: 'admin',
+        message: text,
+      });
+
+      btn.disabled = false;
+
+      if (error) {
+        alert('No se pudo enviar la respuesta.');
+        return;
+      }
+
+      document.getElementById('reply-text').value = '';
+      await loadTickets();
+      // Refresh modal with the updated ticket (status moves to "respondido")
+      const updated = ticketsById[currentTicketId];
+      if (updated) await openTicket(currentTicketId);
+    });
+
+    document.getElementById('toggle-status-btn').addEventListener('click', async () => {
+      if (!currentTicketId) return;
+      const t = ticketsById[currentTicketId];
+      const newStatus = t.status === 'cerrado' ? 'respondido' : 'cerrado';
+
+      const { error } = await sb.from('feedback').update({ status: newStatus }).eq('id', currentTicketId);
+      if (error) {
+        alert('No se pudo actualizar el estado.');
+        return;
+      }
+
+      document.getElementById('modal-overlay').classList.add('hidden');
+      currentTicketId = null;
+      await loadTickets();
+    });
+
+    init();
+  </script>
+</body>
+</html>
