@@ -372,6 +372,17 @@
     </div>
   </div>
 
+  <!-- ── Password recovery ── -->
+  <div id="recovery-screen" class="login-screen hidden">
+    <div class="login-box">
+      <div class="logo">KARGA</div>
+      <div class="subtitle">Establece tu nueva contraseña</div>
+      <div id="recovery-error" class="error-msg hidden"></div>
+      <input id="recovery-password" type="password" placeholder="Nueva contraseña" autocomplete="new-password" />
+      <button id="recovery-btn" class="btn-primary">Guardar contraseña</button>
+    </div>
+  </div>
+
   <!-- ── Dashboard ── -->
   <div id="dashboard" class="hidden">
     <header class="topbar">
@@ -436,6 +447,9 @@
     const dashboard = document.getElementById('dashboard');
     const loginError = document.getElementById('login-error');
 
+    const recoveryScreen = document.getElementById('recovery-screen');
+    const recoveryError = document.getElementById('recovery-error');
+
     function showError(msg) {
       loginError.textContent = msg;
       loginError.classList.remove('hidden');
@@ -481,6 +495,48 @@
       await sb.auth.signOut();
       dashboard.classList.add('hidden');
       loginScreen.classList.remove('hidden');
+    });
+
+    sb.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        loginScreen.classList.add('hidden');
+        dashboard.classList.add('hidden');
+        recoveryScreen.classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('recovery-btn').addEventListener('click', async () => {
+      const password = document.getElementById('recovery-password').value;
+      if (!password || password.length < 6) {
+        recoveryError.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+        recoveryError.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('recovery-btn');
+      btn.disabled = true;
+      btn.textContent = 'Guardando…';
+
+      const { data, error } = await sb.auth.updateUser({ password });
+
+      btn.disabled = false;
+      btn.textContent = 'Guardar contraseña';
+
+      if (error) {
+        recoveryError.textContent = 'No se pudo actualizar la contraseña.';
+        recoveryError.classList.remove('hidden');
+        return;
+      }
+
+      if (data.user?.id !== ADMIN_ID) {
+        recoveryError.textContent = 'Esta cuenta no tiene acceso al panel de soporte.';
+        recoveryError.classList.remove('hidden');
+        await sb.auth.signOut();
+        return;
+      }
+
+      recoveryScreen.classList.add('hidden');
+      enterDashboard();
     });
 
     async function init() {
