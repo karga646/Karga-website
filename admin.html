@@ -562,13 +562,25 @@
 
       const { data: tickets, error } = await sb
         .from('feedback')
-        .select('id, user_id, type, message, status, unread_by_user, last_message_at, created_at, profiles(name)')
+        .select('id, user_id, type, message, status, unread_by_user, last_message_at, created_at')
         .order('last_message_at', { ascending: false });
 
       if (error) {
         document.getElementById('board-loading').textContent = 'Error al cargar tickets.';
         return;
       }
+
+      // feedback.user_id has no FK to profiles, so fetch names separately.
+      const userIds = [...new Set(tickets.map(t => t.user_id))];
+      let namesById = {};
+      if (userIds.length > 0) {
+        const { data: profiles } = await sb
+          .from('profiles')
+          .select('id, name')
+          .in('id', userIds);
+        (profiles || []).forEach(p => namesById[p.id] = p.name);
+      }
+      tickets.forEach(t => t.profiles = { name: namesById[t.user_id] });
 
       ticketsById = {};
       tickets.forEach(t => ticketsById[t.id] = t);
