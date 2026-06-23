@@ -571,7 +571,7 @@
       }
 
       // feedback.user_id has no FK to profiles, so fetch names separately.
-      const userIds = [...new Set(tickets.map(t => t.user_id))];
+      const userIds = [...new Set(tickets.map(t => t.user_id).filter(Boolean))];
       let namesById = {};
       if (userIds.length > 0) {
         const { data: profiles } = await sb
@@ -580,7 +580,7 @@
           .in('id', userIds);
         (profiles || []).forEach(p => namesById[p.id] = p.name);
       }
-      tickets.forEach(t => t.profiles = { name: namesById[t.user_id] });
+      tickets.forEach(t => t.profiles = { name: namesById[t.user_id] ?? null });
 
       ticketsById = {};
       tickets.forEach(t => ticketsById[t.id] = t);
@@ -610,14 +610,15 @@
       card.className = 'card';
       card.addEventListener('click', () => openTicket(t.id));
 
-      const userName = t.profiles?.name || 'Usuario sin nombre';
+      const userName = t.profiles?.name || 'Sin nombre';
+      const uidSnippet = t.user_id ? `<span style="font-size:0.68rem;color:var(--muted);font-family:monospace;margin-left:0.4rem">…${t.user_id.slice(-8)}</span>` : '';
 
       card.innerHTML = `
         <div class="card-top">
           <span class="card-type">${TYPE_LABELS[t.type] || t.type}</span>
           <span class="card-date">${fmtDate(t.last_message_at)}</span>
         </div>
-        <div class="card-user">${escapeHtml(userName)}${t.unread_by_user ? '' : ''}</div>
+        <div class="card-user">${escapeHtml(userName)}${uidSnippet}</div>
         <div class="card-msg">${escapeHtml(t.message)}</div>
       `;
       return card;
@@ -638,8 +639,11 @@
       const t = ticketsById[id];
 
       document.getElementById('modal-title').textContent = TYPE_LABELS[t.type] || t.type;
-      document.getElementById('modal-meta').textContent =
-        `${t.profiles?.name || 'Usuario sin nombre'} · ${fmtDate(t.created_at)}`;
+      const metaName = t.profiles?.name || 'Sin nombre';
+      const metaUid  = t.user_id || '—';
+      document.getElementById('modal-meta').innerHTML =
+        `${escapeHtml(metaName)} · ${fmtDate(t.created_at)}<br>` +
+        `<span id="uid-display" title="Clic para copiar UUID" style="font-family:monospace;font-size:0.75rem;cursor:pointer;color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:0.1rem 0.4rem;display:inline-block;margin-top:0.3rem" onclick="copyUid('${metaUid}')">${metaUid}</span>`;
 
       const toggleBtn = document.getElementById('toggle-status-btn');
       toggleBtn.textContent = t.status === 'cerrado' ? 'Reabrir ticket' : 'Marcar como resuelto';
@@ -733,6 +737,14 @@
       currentTicketId = null;
       await loadTickets();
     });
+
+    function copyUid(uid) {
+      if (!uid || uid === '—') return;
+      navigator.clipboard.writeText(uid).then(() => {
+        const el = document.getElementById('uid-display');
+        if (el) { el.textContent = '¡Copiado!'; setTimeout(() => el.textContent = uid, 1500); }
+      });
+    }
 
     init();
   </script>
