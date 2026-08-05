@@ -227,6 +227,22 @@
       margin-top: 1.4rem;
     }
 
+    .price-box {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      margin: 2rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .price-box .label { font-weight: 700; font-size: 1.05rem; }
+    .price-box .amount { font-weight: 800; font-size: 1.3rem; color: var(--accent); }
+
     footer {
       margin-top: 4rem;
       padding-top: 2rem;
@@ -256,6 +272,7 @@
       <p>karga.fit</p>
       <nav>
         <button class="active" onclick="showSection('privacy', this)">Aviso de Privacidad</button>
+        <button onclick="showSection('pro', this)">Karga Pro</button>
         <button onclick="showSection('contact', this)">Contacto</button>
       </nav>
     </header>
@@ -400,6 +417,92 @@
 
     </div><!-- /privacy -->
 
+    <!-- Karga Pro -->
+    <div id="pro" class="section">
+
+    <h1>Karga Pro</h1>
+    <p style="color: var(--muted); font-size: 0.88rem;">Última actualización: agosto de 2026</p>
+
+    <p>
+      Karga Pro es una suscripción opcional que desbloquea el uso extendido de las funciones de
+      inteligencia artificial dentro de la aplicación Karga. Esta sección describe exactamente qué
+      incluye, su precio y sus límites de uso.
+    </p>
+
+    <div class="price-box">
+      <span class="label">Suscripción mensual</span>
+      <span class="amount">$99.00 MXN / mes</span>
+    </div>
+    <p>
+      El pago se realiza a través de tu cuenta de Apple (App Store) y se renueva automáticamente cada
+      mes al mismo precio, salvo que la canceles con al menos 24 horas de anticipación al fin del
+      periodo actual. Podés cancelar en cualquier momento desde los ajustes de tu Apple ID
+      (Configuración → tu nombre → Suscripciones), sin necesidad de contactarnos.
+    </p>
+
+    <h2>1. Qué incluye Karga Pro</h2>
+
+    <div class="card">
+      <strong>📸 Estimación de % de grasa con IA</strong>
+      <ul>
+        <li>La versión gratuita permite 2 análisis por ciclo de check-in</li>
+        <li>Karga Pro elimina ese límite — podés analizar tu % de grasa las veces que quieras</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <strong>🏋️ Rutinas de entrenamiento con IA</strong>
+      <ul>
+        <li>La versión gratuita permite generar rutinas de hasta 4 días de entrenamiento por semana</li>
+        <li>Karga Pro permite generar rutinas de hasta 7 días de entrenamiento por semana</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <strong>📋 Importar historial de entrenamientos con IA</strong>
+      <ul>
+        <li>La versión gratuita permite importar hasta 100 entrenamientos de por vida</li>
+        <li>Karga Pro permite importar hasta 5,500 entrenamientos de por vida</li>
+      </ul>
+    </div>
+
+    <h2>2. Límites de uso justo</h2>
+    <p>
+      Los números anteriores no son cifras de marketing sin sentido — son límites reales, diseñados
+      para ser más que suficientes para cualquier uso normal de la app (por ejemplo, 5,500
+      entrenamientos equivalen a más de 15 años entrenando todos los días), mientras evitan el abuso
+      del servicio por parte de terceros. Estos límites aplican por igual a todas las cuentas,
+      incluidas las que tienen Karga Pro activo, y no pueden superarse bajo ninguna circunstancia.
+    </p>
+    <p>
+      Adicionalmente, para evitar spam automatizado, algunas funciones de IA tienen un tope diario
+      independiente de si tenés Karga Pro o no. Este tope es lo suficientemente alto como para no
+      afectar el uso normal de la app.
+    </p>
+
+    <h2>3. Cancelación y reembolsos</h2>
+    <p>
+      Podés cancelar tu suscripción en cualquier momento desde la configuración de tu cuenta de Apple.
+      La cancelación se hace efectiva al final del periodo de facturación ya pagado — no se realizan
+      reembolsos parciales por el tiempo restante. Las solicitudes de reembolso se gestionan
+      directamente con Apple, conforme a sus políticas, ya que todos los pagos se procesan a través
+      de App Store.
+    </p>
+
+    <h2>4. Dudas o soporte</h2>
+    <p>
+      Si tenés alguna duda sobre tu suscripción, escribinos a
+      <a href="mailto:kargaoficial@gmail.com" style="color: var(--accent);">kargaoficial@gmail.com</a>,
+      o usá el apartado de soporte dentro de la app.
+    </p>
+
+    <footer>
+      <p>© 2026 Karga. Todos los derechos reservados.</p>
+      <p style="margin-top: 0.4rem;"><a href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a></p>
+    </footer>
+
+    </div><!-- /pro -->
+
     <!-- Contacto -->
     <div id="contact" class="section">
 
@@ -432,7 +535,19 @@
       document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
       document.getElementById(id).classList.add('active');
       btn.classList.add('active');
+      history.replaceState(null, '', '#' + id);
     }
+
+    // Deep link support: https://karga.fit/#pro abre la pestaña Karga Pro directo
+    (function () {
+      const id = window.location.hash.replace('#', '');
+      const section = id && document.getElementById(id);
+      if (section) {
+        const btn = Array.from(document.querySelectorAll('nav button'))
+          .find(b => b.getAttribute('onclick')?.includes(`'${id}'`));
+        if (btn) showSection(id, btn);
+      }
+    })();
   </script>
 </body>
 </html>
