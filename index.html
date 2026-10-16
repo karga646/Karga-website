@@ -3,7 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Karga</title>
+  <title>Karga — App de entrenamiento y nutrición personalizada</title>
+  <meta name="description" content="Karga es una app para iPhone que calcula tus calorías y macros según tu % de grasa, registra tus entrenamientos y sigue tu progreso. Descárgala en el App Store." />
+  <link rel="canonical" href="https://karga.fit/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Karga" />
+  <meta property="og:title" content="Karga — App de entrenamiento y nutrición personalizada" />
+  <meta property="og:description" content="Calorías y macros según tu composición corporal, rutinas, escáner de alimentos y progreso." />
+  <meta property="og:url" content="https://karga.fit/" />
+  <meta property="og:locale" content="es_MX" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"MobileApplication","name":"Karga","operatingSystem":"iOS","applicationCategory":"HealthApplication","url":"https://karga.fit","description":"App de entrenamiento y nutrición que calcula calorías y macros según tu composición corporal.","downloadUrl":"https://apps.apple.com/mx/app/karga/id6763583051","offers":{"@type":"Offer","price":"0","priceCurrency":"MXN"}}</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -271,14 +280,30 @@
       <div class="logo">KARGA</div>
       <p>karga.fit</p>
       <nav>
-        <button class="active" onclick="showSection('privacy', this)">Aviso de Privacidad</button>
+        <button class="active" onclick="showSection('about', this)">Inicio</button>
+        <button onclick="showSection('privacy', this)">Aviso de Privacidad</button>
         <button onclick="showSection('pro', this)">Karga Pro</button>
         <button onclick="showSection('contact', this)">Contacto</button>
       </nav>
     </header>
 
     <!-- Aviso de Privacidad -->
-    <div id="privacy" class="section active">
+    <!-- Inicio -->
+    <div id="about" class="section active">
+      <h1>Karga: entrenamiento y nutrición hechos a tu medida</h1>
+      <p>Karga es una app para <strong>registrar tus entrenamientos y tu alimentación</strong> con un plan de calorías y macros calculado a partir de tu <strong>porcentaje de grasa y tu composición corporal</strong>. Ya sea que quieras ganar músculo, bajar grasa o recomponer, la app ajusta tu plan en cada check-in.</p>
+      <ul>
+        <li>Calorías y macros personalizados (definición, recomposición o volumen limpio)</li>
+        <li>Registro de rutinas, series, repeticiones y pesos</li>
+        <li>Escáner de código de barras y foto de tu platillo con IA</li>
+        <li>Karga Food, asistente de nutrición con IA</li>
+        <li>Calendario y puntos para ver tu progreso hasta tu meta</li>
+      </ul>
+      <p><a href="https://apps.apple.com/mx/app/karga/id6763583051" style="display:inline-block;background:var(--accent);color:#fff;font-weight:700;text-decoration:none;padding:.8rem 1.6rem;border-radius:99px;">Descargar en el App Store</a></p>
+      <p>Lee más en el <a href="/blog/" style="color:var(--accent);">blog</a>: <a href="/blog/que-es-karga-app-de-entrenamiento-y-nutricion.html" style="color:var(--accent);">qué es Karga y cómo funciona</a>.</p>
+    </div><!-- /about -->
+
+    <div id="privacy" class="section">
 
     <h1>Aviso de Privacidad</h1>
     <p style="color: var(--muted); font-size: 0.88rem;">Última actualización: abril de 2026</p>
