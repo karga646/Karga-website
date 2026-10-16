@@ -142,7 +142,7 @@
 
     .board {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
     }
 
@@ -170,6 +170,7 @@
 
     .col-abierto h2 { color: var(--blue); }
     .col-respondido h2 { color: var(--green); }
+    .col-sin_respuesta h2 { color: var(--orange, #FF9F0A); }
     .col-cerrado h2 { color: var(--muted); }
 
     .cards { display: flex; flex-direction: column; gap: 0.6rem; }
@@ -400,6 +401,10 @@
           <h2>En proceso <span id="count-respondido" class="count">0</span></h2>
           <div id="cards-respondido" class="cards"></div>
         </section>
+        <section class="column col-sin_respuesta">
+          <h2>Sin respuesta <span id="count-sin_respuesta" class="count">0</span></h2>
+          <div id="cards-sin_respuesta" class="cards"></div>
+        </section>
         <section class="column col-cerrado">
           <h2>Resueltas <span id="count-cerrado" class="count">0</span></h2>
           <div id="cards-cerrado" class="cards"></div>
@@ -585,10 +590,10 @@
       ticketsById = {};
       tickets.forEach(t => ticketsById[t.id] = t);
 
-      const groups = { abierto: [], respondido: [], cerrado: [] };
+      const groups = { abierto: [], respondido: [], sin_respuesta: [], cerrado: [] };
       tickets.forEach(t => groups[t.status]?.push(t));
 
-      for (const status of ['abierto', 'respondido', 'cerrado']) {
+      for (const status of ['abierto', 'respondido', 'sin_respuesta', 'cerrado']) {
         const container = document.getElementById(`cards-${status}`);
         document.getElementById(`count-${status}`).textContent = groups[status].length;
         container.innerHTML = '';
@@ -717,7 +722,7 @@
 
       document.getElementById('reply-text').value = '';
       await loadTickets();
-      // Refresh modal with the updated ticket (status moves to "respondido")
+      // Refresh modal with the updated ticket (status moves to "sin_respuesta")
       const updated = ticketsById[currentTicketId];
       if (updated) await openTicket(currentTicketId);
     });
