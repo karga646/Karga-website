@@ -94,6 +94,7 @@
 
     .section.active { display: block; }
 
+    h2.page-title { font-size: 1.9rem; font-weight: 700; color: var(--text); margin: 0 0 0.5rem; }
     h1 {
       font-size: 1.9rem;
       font-weight: 700;
@@ -177,7 +178,7 @@
       padding: 2rem 0 2.5rem;
     }
 
-    .contact-hero h1 {
+    .contact-hero .page-title {
       margin-bottom: 0.7rem;
     }
 
@@ -267,7 +268,7 @@
     }
 
     @media (max-width: 480px) {
-      h1 { font-size: 1.5rem; }
+      h1, h2.page-title { font-size: 1.5rem; }
       .card { padding: 1rem 1.2rem; }
       .contact-card { padding: 1.5rem 1.2rem; }
     }
@@ -305,7 +306,7 @@
 
     <div id="privacy" class="section">
 
-    <h1>Aviso de Privacidad</h1>
+    <h2 class="page-title">Aviso de Privacidad</h2>
     <p style="color: var(--muted); font-size: 0.88rem;">Última actualización: octubre de 2026</p>
 
     <!-- Consentimiento -->
@@ -476,7 +477,7 @@
     <!-- Karga Pro -->
     <div id="pro" class="section">
 
-    <h1>Karga Pro</h1>
+    <h2 class="page-title">Karga Pro</h2>
     <p style="color: var(--muted); font-size: 0.88rem;">Última actualización: agosto de 2026</p>
 
     <p>
@@ -563,7 +564,7 @@
     <div id="contact" class="section">
 
       <div class="contact-hero">
-        <h1>Contáctanos</h1>
+        <h2 class="page-title">Contáctanos</h2>
         <p>¿Tienes dudas, sugerencias o necesitas ayuda? Escríbenos y te respondemos a la brevedad.</p>
       </div>
 
