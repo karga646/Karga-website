@@ -14,50 +14,27 @@
   <meta property="og:locale" content="es_MX" />
   <meta name="twitter:card" content="summary" />
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Blog", "name": "Blog de Karga", "url": "https://karga.fit/blog/", "inLanguage": "es-MX"}</script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --bg:#0d0d0d; --surface:#161616; --border:#2a2a2a; --accent:#E03333; --text:#e8e8e8; --muted:#888; --radius:12px; }
-    body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; line-height:1.75; padding:2rem 1rem 4rem; }
-    .container { max-width:760px; margin:0 auto; }
-    header { text-align:center; padding:2.5rem 0 1.5rem; border-bottom:1px solid var(--border); margin-bottom:2.5rem; }
-    .logo { font-size:2.2rem; font-weight:800; letter-spacing:-1px; color:var(--accent); text-decoration:none; }
-    header nav { margin-top:1rem; display:flex; gap:1.2rem; justify-content:center; font-size:.9rem; }
-    header nav a { color:var(--muted); text-decoration:none; } header nav a:hover { color:var(--text); }
-    h1 { font-size:2rem; line-height:1.25; margin-bottom:.6rem; }
-    h2 { font-size:1.3rem; color:var(--accent); margin:2.4rem 0 .8rem; }
-    h3 { font-size:1.05rem; margin:1.4rem 0 .4rem; }
-    p { margin-bottom:1rem; }
-    .meta { color:var(--muted); font-size:.85rem; margin-bottom:1.8rem; }
-    ul { margin:0 0 1rem 1.2rem; } li { margin:.3rem 0; }
-    a { color:var(--accent); }
-    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.2rem 1.4rem; margin:1.4rem 0; }
-    .cta { display:inline-block; background:var(--accent); color:#fff; font-weight:700; text-decoration:none; padding:.8rem 1.6rem; border-radius:99px; margin:.4rem 0; }
-    footer { margin-top:3.5rem; padding-top:1.8rem; border-top:1px solid var(--border); text-align:center; color:var(--muted); font-size:.85rem; }
-    @media (max-width:480px){ h1{font-size:1.55rem;} }
-  </style>
+  <link rel="stylesheet" href="/blog/blog.css" />
 </head>
 <body>
-  <div class="container">
-    <header>
-      <a class="logo" href="/">KARGA</a>
-      <nav><a href="/">Inicio</a><a href="/blog/">Blog</a><a href="/#pro">Karga Pro</a><a href="/#contact">Contacto</a></nav>
-    </header>
+  <div class="topbar"><div class="topbar-inner">
+    <a class="logo" href="/">KARGA</a>
+    <nav><a href="/">Inicio</a><a href="/blog/" class="on">Blog</a><a href="/#pro">Karga Pro</a><a href="/#contact">Contacto</a></nav>
+  </div></div>
 
-    <h1>Blog de Karga</h1>
-    <p class="meta">Entrenamiento, nutrición y progreso.</p>
-    <div class="card">
-      <h3><a href="/blog/huevo-proteina-calorias-cuantos-comer-al-dia.html">Huevo: proteína, calorías y cuántos comer al día</a></h3>
-      <p>¿Cuánta proteína y calorías tiene un huevo? Datos de clara y yema, cuántos comer al día según la evidencia y cómo meterlo en tus macros.</p>
+  <div class="wrap wide">
+    <div class="blog-hero">
+      <h1>Blog de Karga</h1>
+      <p>Entrenamiento, nutrición y progreso, con datos y fuentes.</p>
     </div>
-    <div class="card">
-      <h3><a href="/blog/que-es-karga-app-de-entrenamiento-y-nutricion.html">Karga: la app de entrenamiento y nutrición que ajusta tu plan a tu cuerpo</a></h3>
-      <p>Qué es Karga, qué hace y cómo funciona: rutinas, calorías y macros calculados con tu % de grasa, escáner de alimentos, nutriólogo con IA y progreso. Cómo descargarla en iPhone.</p>
+    <div class="grid">
+      <a class="post-card" href="/blog/huevo-proteina-calorias-cuantos-comer-al-dia.html"><span class="pill" style="align-self:flex-start">Nutrición</span><h3>Huevo: proteína, calorías y cuántos comer al día</h3><p>¿Cuánta proteína y calorías tiene un huevo? Datos de clara y yema, cuántos comer al día según la evidencia y cómo meterlo en tus macros.</p><span class="more">Leer artículo →</span></a>
+      <a class="post-card" href="/blog/que-es-karga-app-de-entrenamiento-y-nutricion.html"><span class="pill" style="align-self:flex-start">La app</span><h3>Karga: la app de entrenamiento y nutrición que ajusta tu plan a tu cuerpo</h3><p>Qué es Karga, qué hace y cómo funciona: rutinas, calorías y macros calculados con tu % de grasa, escáner de alimentos, nutriólogo con IA y progreso. Cómo descargarla en iPhone.</p><span class="more">Leer artículo →</span></a>
     </div>
-
-    <footer>
-      <p>© 2026 Karga. Todos los derechos reservados.</p>
-      <p style="margin-top:.4rem;"><a href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a></p>
-    </footer>
   </div>
+  <footer>
+    <p>© 2026 Karga. Todos los derechos reservados.</p>
+    <p style="margin-top:.4rem;"><a href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a></p>
+  </footer>
 </body>
 </html>

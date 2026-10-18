@@ -1,0 +1,101 @@
+/* Estilos compartidos del blog de Karga. NO borrar: lo usan todas las páginas de /blog/. */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0b0b0c; --surface: #151517; --surface-2: #1b1b1e; --border: #26262a;
+  --accent: #E03333; --accent-soft: rgba(224,51,51,.12);
+  --text: #ececee; --muted: #9a9aa2; --radius: 16px;
+}
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+body {
+  background: radial-gradient(1000px 420px at 50% -120px, rgba(224,51,51,.10), transparent 70%), var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-size: 1.05rem; line-height: 1.8; -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+
+/* ── Barra superior ── */
+.topbar { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); background: rgba(11,11,12,.78); border-bottom: 1px solid var(--border); }
+.topbar-inner { max-width: 1040px; margin: 0 auto; padding: .8rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.logo { font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; color: var(--accent); text-decoration: none; }
+.topbar nav { display: flex; gap: .3rem; font-size: .92rem; }
+.topbar nav a { color: var(--muted); text-decoration: none; padding: .4rem .75rem; border-radius: 99px; transition: background .15s, color .15s; }
+.topbar nav a:hover, .topbar nav a.on { color: var(--text); background: var(--surface-2); }
+
+.wrap { max-width: 740px; margin: 0 auto; padding: 0 1.25rem 4rem; }
+.wrap.wide { max-width: 1040px; }
+
+/* ── Encabezado del artículo ── */
+.post-head { padding: 3.2rem 0 1.4rem; }
+.post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; color: var(--muted); font-size: .88rem; margin-bottom: 1rem; }
+.pill { background: var(--accent-soft); color: #ff6b6b; font-weight: 700; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; padding: .28rem .75rem; border-radius: 99px; }
+h1 { font-size: clamp(1.9rem, 5.2vw, 2.8rem); line-height: 1.15; letter-spacing: -.03em; font-weight: 800; }
+.lead { font-size: 1.18rem; color: #d4d4d8; margin: 1.1rem 0 1.2rem; }
+
+/* ── Cuerpo ── */
+article h2 { font-size: 1.55rem; letter-spacing: -.02em; line-height: 1.25; margin: 3rem 0 1rem; padding-top: 1.6rem; border-top: 1px solid var(--border); }
+article h2:first-of-type { border-top: 0; }
+article h3 { font-size: 1.12rem; margin: 1.8rem 0 .5rem; color: #fff; }
+article p { margin-bottom: 1.1rem; color: #d9d9dd; }
+article ul, article ol { margin: 0 0 1.2rem 1.3rem; } article li { margin: .45rem 0; color: #d9d9dd; }
+article li::marker { color: var(--accent); }
+strong { color: #fff; }
+
+/* ── Datos clave ── */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin: 1.6rem 0; }
+.stats div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem .9rem; text-align: center; }
+.stats b { display: block; font-size: 1.6rem; line-height: 1.2; letter-spacing: -.02em; color: #fff; }
+.stats span { display: block; color: var(--muted); font-size: .8rem; line-height: 1.35; margin-top: .25rem; }
+
+/* ── Índice ── */
+.toc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.4rem; margin: 1.6rem 0 .5rem; }
+.toc strong { display: block; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .4rem; }
+.toc ol { margin: 0 0 0 1.1rem; } .toc li { margin: .25rem 0; font-size: .97rem; } .toc a { color: var(--text); text-decoration: none; } .toc a:hover { color: var(--accent); }
+
+/* ── Tablas ── */
+.tablewrap { overflow-x: auto; margin: 1.3rem 0 .6rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: .95rem; min-width: 480px; }
+th, td { text-align: left; padding: .8rem 1rem; }
+th { color: var(--muted); font-weight: 600; font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; background: var(--surface-2); }
+tbody tr + tr td { border-top: 1px solid var(--border); }
+td:first-child { color: #fff; font-weight: 600; }
+.note { color: var(--muted); font-size: .85rem; line-height: 1.55; margin-bottom: 1.4rem; }
+
+/* ── Preguntas frecuentes ── */
+details { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin: .6rem 0; transition: border-color .15s; }
+details[open] { border-color: #3a3a40; }
+summary { cursor: pointer; list-style: none; padding: 1rem 3rem 1rem 1.2rem; font-weight: 600; color: #fff; position: relative; line-height: 1.45; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); font-size: 1.4rem; color: var(--accent); }
+details[open] summary::after { content: "–"; }
+details p { padding: 0 1.2rem 1.1rem; margin: 0; }
+
+/* ── Llamado a descargar ── */
+.cta-card { background: linear-gradient(135deg, rgba(224,51,51,.22), rgba(224,51,51,.05) 60%), var(--surface); border: 1px solid rgba(224,51,51,.4); border-radius: 20px; padding: 1.6rem 1.5rem; margin: 1.8rem 0; text-align: center; }
+.cta-card strong { display: block; font-size: 1.2rem; margin-bottom: .9rem; }
+.cta { display: inline-block; background: var(--accent); color: #fff; font-weight: 700; text-decoration: none; padding: .85rem 1.7rem; border-radius: 99px; box-shadow: 0 8px 24px rgba(224,51,51,.35); transition: transform .15s, box-shadow .15s; }
+.cta:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(224,51,51,.45); }
+
+/* ── Fuentes ── */
+ol.sources { margin: 0 0 1rem 1.2rem; font-size: .86rem; color: var(--muted); line-height: 1.6; } ol.sources li { margin: .55rem 0; color: var(--muted); }
+.disclaimer { font-size: .88rem; color: var(--muted); background: var(--surface); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: .9rem 1.1rem; }
+
+/* ── Índice del blog ── */
+.blog-hero { padding: 3.4rem 0 1.6rem; } .blog-hero p { color: var(--muted); margin-top: .6rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.1rem; margin-top: 1.5rem; }
+.post-card { display: flex; flex-direction: column; gap: .6rem; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 1.4rem; text-decoration: none; color: inherit; transition: transform .15s, border-color .15s; }
+.post-card:hover { transform: translateY(-3px); border-color: rgba(224,51,51,.55); }
+.post-card h3 { font-size: 1.15rem; line-height: 1.3; color: #fff; margin: 0; }
+.post-card p { color: var(--muted); font-size: .93rem; line-height: 1.6; margin: 0; }
+.post-card .more { color: var(--accent); font-weight: 600; font-size: .9rem; margin-top: auto; }
+
+/* ── Pie ── */
+footer { max-width: 740px; margin: 0 auto; padding: 2rem 1.25rem 3rem; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: .85rem; }
+footer a { color: var(--muted); }
+
+@media (max-width: 560px) {
+  body { font-size: 1rem; }
+  .stats { grid-template-columns: 1fr; }
+  .topbar nav a { padding: .35rem .55rem; font-size: .86rem; }
+  .post-head { padding-top: 2.2rem; }
+}
