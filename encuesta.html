@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Tu opinión sobre Karga</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d0d0d; --surface:#161616; --border:#2a2a2a; --accent:#E03333; --text:#e8e8e8; --muted:#888; --radius:12px; }
+    body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; line-height:1.6; padding:2rem 1rem 4rem; }
+    .container { max-width:640px; margin:0 auto; }
+    header { text-align:center; padding:2rem 0 1.2rem; }
+    .logo { font-size:2.2rem; font-weight:800; letter-spacing:-1px; color:var(--accent); }
+    h1 { font-size:1.4rem; margin-top:.6rem; }
+    .sub { color:var(--muted); font-size:.95rem; margin-top:.3rem; }
+    .gift { background:rgba(224,51,51,.12); border:1px solid var(--accent); border-radius:var(--radius); padding:.8rem 1rem; margin:1.2rem 0; font-size:.95rem; }
+    .q { margin-top:1.8rem; }
+    .q h2 { font-size:1.05rem; margin-bottom:.7rem; }
+    .opt { display:block; width:100%; text-align:left; background:var(--surface); border:1px solid var(--border); color:var(--text); border-radius:var(--radius); padding:.8rem 1rem; margin-bottom:.5rem; font-size:1rem; cursor:pointer; font-family:inherit; }
+    .opt.on { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700; }
+    .nps { display:flex; flex-wrap:wrap; gap:.4rem; }
+    .nps .opt { width:3rem; text-align:center; margin:0; padding:.7rem 0; }
+    input[type=text], textarea { width:100%; background:#1d1d1d; border:1px solid var(--border); color:var(--text); border-radius:var(--radius); padding:.8rem 1rem; font-size:1rem; font-family:inherit; }
+    textarea { min-height:110px; resize:vertical; }
+    .go { display:block; width:100%; background:var(--accent); color:#fff; border:0; border-radius:14px; padding:1rem; font-size:1.1rem; font-weight:800; margin-top:2rem; cursor:pointer; font-family:inherit; }
+    .go:disabled { opacity:.6; }
+    .msg { text-align:center; padding:3rem 0; }
+    .msg .big { font-size:3rem; }
+    .err { color:#ff8a8a; margin-top:1rem; text-align:center; }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">Karga</div>
+    <h1>Tu opinión sobre Karga</h1>
+    <p class="sub">5 preguntas, menos de un minuto. Las leo yo, Diego.</p>
+  </header>
+
+  <div id="gift" class="gift hidden">🎁 Al terminar te regalo <strong>1 semana de Karga Pro</strong> en tu cuenta. Entra a la app con el mismo correo con el que te registraste.</div>
+
+  <form id="form" class="hidden"></form>
+
+  <div id="done" class="msg hidden">
+    <div class="big">🙌</div>
+    <h1>¡Gracias!</h1>
+    <p id="doneText" class="sub"></p>
+  </div>
+  <div id="bad" class="msg hidden">
+    <h1>Este enlace no es válido</h1>
+    <p class="sub">Puede que ya hayas respondido la encuesta o que el enlace esté incompleto.</p>
+  </div>
+</div>
+
+<script>
+  // Mismas preguntas que lib/survey.ts de la app; si cambias una, cámbiala allá también.
+  var QUESTIONS = [
+    { id:'quiere_hacer', type:'multi', title:'¿Qué te gustaría poder hacer con Karga?', other:true,
+      options:['Generar dietas personalizadas','Registrar entrenamientos','Poder ver tu progreso','Calcular macros de alimentos'] },
+    { id:'por_que_dejo', type:'multi', title:'¿Por qué dejaste de usar Karga?', other:true,
+      options:['Se me olvidó','Registrar la comida me tomaba mucho tiempo','Registrar las series me parecía lento','Uso otra app','Ya no entreno o ya no llevo dieta'] },
+    { id:'mas_gusto', type:'single', title:'¿Qué es lo que más te gustó de Karga?', other:true,
+      options:['Las rutinas','El registro de series','Los platillos','El escáner o la foto del platillo','El cálculo de macros','Karga Food (el nutriólogo con IA)'] },
+    { id:'recomendarias', type:'nps', title:'¿Qué tan probable es que recomiendes Karga a un amigo?' },
+    { id:'una_cosa', type:'text', title:'Si pudieras pedirme una sola cosa para que volvieras, ¿qué sería?', required:true }
+  ];
+  var ENDPOINT = 'https://ugnbxdszrraxkzabbfns.supabase.co/functions/v1/submit-survey';
+
+  var params = new URLSearchParams(location.search);
+  var token = params.get('t') || '';
+  var showGift = params.get('v') === 'pro';   // solo cosmético: el servidor decide si da el regalo
+  var answers = {};
+  var form = document.getElementById('form');
+
+  function $(id) { return document.getElementById(id); }
+  function show(id) { $(id).classList.remove('hidden'); }
+
+  if (!/^[0-9a-f-]{36}$/i.test(token)) { show('bad'); }
+  else { if (showGift) show('gift'); build(); show('form'); }
+
+  function ans(id) { return (answers[id] = answers[id] || {}); }
+
+  function build() {
+    QUESTIONS.forEach(function (q) {
+      var wrap = document.createElement('div'); wrap.className = 'q';
+      wrap.innerHTML = '<h2></h2>'; wrap.firstChild.textContent = q.title;
+      if (q.type === 'multi' || q.type === 'single') {
+        q.options.forEach(function (o) {
+          var b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = o;
+          b.onclick = function () {
+            var a = ans(q.id); a.selected = a.selected || [];
+            if (q.type === 'single') {
+              a.selected = [o];
+              Array.prototype.forEach.call(wrap.querySelectorAll('.opt'), function (x) { x.classList.remove('on'); });
+              b.classList.add('on');
+            } else {
+              var i = a.selected.indexOf(o);
+              if (i >= 0) { a.selected.splice(i, 1); b.classList.remove('on'); } else { a.selected.push(o); b.classList.add('on'); }
+            }
+          };
+          wrap.appendChild(b);
+        });
+        if (q.other) {
+          var t = document.createElement('input'); t.type = 'text'; t.placeholder = 'Otro (escribe aquí)'; t.maxLength = 300;
+          t.oninput = function () { ans(q.id).other = t.value; };
+          wrap.appendChild(t);
+        }
+      } else if (q.type === 'nps') {
+        var row = document.createElement('div'); row.className = 'nps';
+        for (var n = 0; n <= 10; n++) (function (n) {
+          var b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = n;
+          b.onclick = function () {
+            ans(q.id).value = n;
+            Array.prototype.forEach.call(row.children, function (x) { x.classList.remove('on'); });
+            b.classList.add('on');
+          };
+          row.appendChild(b);
+        })(n);
+        wrap.appendChild(row);
+      } else {
+        var ta = document.createElement('textarea'); ta.maxLength = 1000; ta.placeholder = 'Escribe aquí';
+        ta.oninput = function () { ans(q.id).value = ta.value; };
+        wrap.appendChild(ta);
+      }
+      form.appendChild(wrap);
+    });
+    var go = document.createElement('button'); go.type = 'submit'; go.className = 'go'; go.textContent = 'Enviar';
+    var err = document.createElement('div'); err.className = 'err';
+    form.appendChild(go); form.appendChild(err);
+
+    form.onsubmit = function (e) {
+      e.preventDefault();
+      err.textContent = '';
+      var last = (answers.una_cosa && answers.una_cosa.value || '').trim();
+      if (!last) { err.textContent = 'Cuéntame tu respuesta en la última pregunta, es la que más me sirve.'; return; }
+      go.disabled = true; go.textContent = 'Enviando…';
+      fetch(ENDPOINT, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ token: token, answers: answers }) })
+        .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+        .then(function (r) {
+          if (r.status === 409 || r.status === 404) { form.classList.add('hidden'); $('gift').classList.add('hidden'); show('bad'); return; }
+          if (!r.body.ok) throw new Error('fail');
+          form.classList.add('hidden'); $('gift').classList.add('hidden');
+          $('doneText').textContent = r.body.rewarded
+            ? 'Ya tienes tu semana de Karga Pro. Abre la app con tu cuenta para verla. Leo cada respuesta personalmente.'
+            : r.body.pro
+              ? 'Recibí tus respuestas. Tu semana de Karga Pro la activo en tu cuenta en las próximas horas. Leo cada respuesta personalmente.'
+              : 'Leo cada respuesta personalmente. Con esto mejoro Karga.';
+          show('done');
+        })
+        .catch(function () { go.disabled = false; go.textContent = 'Enviar'; err.textContent = 'No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.'; });
+    };
+  }
+</script>
+</body>
+</html>
