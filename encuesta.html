@@ -39,7 +39,7 @@
     <p class="sub">5 preguntas, menos de un minuto. Las leo yo, Diego.</p>
   </header>
 
-  <div id="gift" class="gift hidden">🎁 Al terminar te regalo <strong>1 semana de Karga Pro</strong> en tu cuenta. Entra a la app con el mismo correo con el que te registraste.</div>
+  <div id="gift" class="gift hidden">🎁 Al terminar te regalo <strong>1 semana de Karga Pro</strong> en tu cuenta. Al terminar te diré con qué cuenta entrar.</div>
 
   <form id="form" class="hidden"></form>
 
@@ -142,10 +142,13 @@
           if (r.status === 409 || r.status === 404) { form.classList.add('hidden'); $('gift').classList.add('hidden'); show('bad'); return; }
           if (!r.body.ok) throw new Error('fail');
           form.classList.add('hidden'); $('gift').classList.add('hidden');
+          var acc = r.body.account || {};
+          var via = acc.provider === 'google' ? ' (entra con Google)' : acc.provider === 'apple' ? ' (entra con Apple)' : '';
+          var who = acc.email ? ' Entra a la app con la cuenta ' + acc.email + via + '.' : ' Entra a la app con la misma cuenta con la que te registraste.';
           $('doneText').textContent = r.body.rewarded
-            ? 'Ya tienes tu semana de Karga Pro. Abre la app con tu cuenta para verla. Leo cada respuesta personalmente.'
+            ? 'Ya tienes tu semana de Karga Pro.' + who + ' Leo cada respuesta personalmente.'
             : r.body.pro
-              ? 'Recibí tus respuestas. Tu semana de Karga Pro la activo en tu cuenta en las próximas horas. Leo cada respuesta personalmente.'
+              ? 'Recibí tus respuestas. Tu semana de Karga Pro la activo en tu cuenta en las próximas horas.' + who + ' Leo cada respuesta personalmente.'
               : 'Leo cada respuesta personalmente. Con esto mejoro Karga.';
           show('done');
         })
