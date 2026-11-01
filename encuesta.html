@@ -78,7 +78,13 @@
   function show(id) { $(id).classList.remove('hidden'); }
 
   if (!/^[0-9a-f-]{36}$/i.test(token)) { show('bad'); }
-  else { if (showGift) show('gift'); build(); show('form'); }
+  else {
+    // Antes de mostrar nada, se pregunta si el enlace ya se usó.
+    fetch(ENDPOINT, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ token: token, check: true }) })
+      .then(function (r) { return r.status === 409 || r.status === 404 ? show('bad') : start(); })
+      .catch(start);
+  }
+  function start() { if (showGift) show('gift'); build(); show('form'); }
 
   function ans(id) { return (answers[id] = answers[id] || {}); }
 
