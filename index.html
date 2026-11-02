@@ -267,6 +267,21 @@
       text-decoration: none;
     }
 
+    /* Galería de capturas de la app */
+    .capturas { margin: 2rem 0 1.5rem; }
+    .capturas h2 { font-size: 1.25rem; margin-bottom: .4rem; }
+    .capturas > p { color: var(--muted); margin-bottom: 1rem; }
+    .capturas-fila {
+      display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory;
+      padding-bottom: .75rem; -webkit-overflow-scrolling: touch;
+    }
+    .capturas figure {
+      flex: 0 0 auto; width: 220px; margin: 0; scroll-snap-align: start;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: .6rem;
+    }
+    .capturas img { display: block; width: 100%; height: auto; border-radius: 14px; }
+    .capturas figcaption { font-size: .85rem; color: var(--muted); margin-top: .55rem; line-height: 1.35; }
+    @media (min-width: 720px) { .capturas-fila { overflow-x: visible; } .capturas figure { flex: 1 1 0; width: auto; } }
     @media (max-width: 480px) {
       h1, h2.page-title { font-size: 1.5rem; }
       .card { padding: 1rem 1.2rem; }
@@ -315,6 +330,27 @@
         <li>Karga Food, asistente de nutrición con IA</li>
         <li>Calendario y puntos para ver tu progreso hasta tu meta</li>
       </ul>
+      <section class="capturas" aria-labelledby="capturas-titulo">
+        <h2 id="capturas-titulo">Así se ve Karga</h2>
+        <p>Tu dieta personalizada y el registro de comidas, con calorías y macros calculados para ti.</p>
+        <div class="capturas-fila">
+          <figure>
+            <img src="/img/karga-food-plan.webp" width="600" height="1190" loading="lazy" decoding="async"
+                 alt="Karga Food: plan de alimentación del jueves con 4 comidas, 2134 kcal, 123 g de proteína, 268 g de carbohidratos y 63 g de grasa">
+            <figcaption><strong>Karga Food</strong> arma tu dieta de la semana con tus calorías y macros.</figcaption>
+          </figure>
+          <figure>
+            <img src="/img/karga-food-detalle.webp" width="600" height="1156" loading="lazy" decoding="async"
+                 alt="Detalle de una comida en Karga Food: yogur griego con fresas y manzana, con gramos, calorías y macros de cada alimento">
+            <figcaption>Cada comida trae los gramos y los macros de cada alimento.</figcaption>
+          </figure>
+          <figure>
+            <img src="/img/registro-de-comidas.webp" width="600" height="1214" loading="lazy" decoding="async"
+                 alt="Registro de comidas en Karga: calorías restantes del día y barras de proteína, carbohidratos y grasas">
+            <figcaption><strong>Registro de comidas</strong>: ve cuántas calorías y macros te faltan en el día.</figcaption>
+          </figure>
+        </div>
+      </section>
       <p><a href="https://apps.apple.com/mx/app/karga/id6763583051" style="display:inline-block;background:var(--accent);color:#fff;font-weight:700;text-decoration:none;padding:.8rem 1.6rem;border-radius:99px;">Descargar en el App Store</a></p>
       <p style="color:var(--muted);font-size:.9rem;">¿Buscas el aviso de privacidad de la app? <a href="/privacidad.html" style="color:var(--accent);">Léelo aquí</a>.</p>
       <p>Lee más en el <a href="/blog/" style="color:var(--accent);">blog</a>: <a href="/blog/que-es-karga-app-de-entrenamiento-y-nutricion.html" style="color:var(--accent);">qué es Karga y cómo funciona</a>.</p>
