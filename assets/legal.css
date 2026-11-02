@@ -1,0 +1,47 @@
+/* Páginas de texto: Karga Pro y Aviso de privacidad (base en /assets/karga.css) */
+
+.doc { max-width: 760px; margin: 0 auto; padding: 3.5rem 1.25rem 5rem; }
+.doc .page-title {
+  font-stretch: 74%; font-weight: 850; line-height: .98; letter-spacing: -.01em;
+  font-size: clamp(2.6rem, 7vw, 4.2rem); margin-bottom: .8rem;
+}
+.doc h2 {
+  font-stretch: 85%; font-weight: 800; font-size: 1.45rem; line-height: 1.2;
+  margin: 3rem 0 .9rem; scroll-margin-top: 96px;
+}
+.doc p { color: var(--ink-2); margin-bottom: 1rem; line-height: 1.7; }
+.doc p:first-of-type[style] { color: var(--muted) !important; }
+.doc strong { color: var(--ink); }
+
+.doc ul { list-style: none; margin: .4rem 0 0; }
+.doc ul li { position: relative; padding: .4rem 0 .4rem 1.25rem; color: var(--ink-2); line-height: 1.55; }
+.doc ul li::before {
+  content: ""; position: absolute; left: 0; top: .95em; width: 7px; height: 7px; border-radius: 50%; background: var(--red);
+}
+
+.doc .card {
+  background: var(--mist); border-radius: 18px; padding: 1.35rem 1.5rem; margin: 1rem 0;
+}
+.doc .card strong { display: block; font-size: 1.05rem; font-weight: 750; margin-bottom: .2rem; color: var(--ink) !important; }
+
+.doc .badge {
+  display: inline-block; vertical-align: middle; margin-left: .45rem;
+  background: var(--red-soft); color: var(--red-text);
+  font-size: .75rem; font-weight: 700; padding: .12rem .55rem; border-radius: 99px;
+}
+
+.doc .consent-box {
+  border-radius: 18px; padding: 1.3rem 1.5rem; margin: 2rem 0;
+  background: var(--red-soft); box-shadow: inset 4px 0 0 var(--red);
+}
+.doc .consent-box p { margin: 0; color: var(--ink); }
+.doc .consent-box strong { color: var(--red-text) !important; }
+
+.doc .price-box {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  background: var(--ink); color: #fff; border-radius: 22px; padding: 1.5rem 1.75rem; margin: 2rem 0;
+}
+.doc .price-box .label { font-weight: 700; font-size: 1.05rem; }
+.doc .price-box .amount { font-stretch: 74%; font-weight: 850; font-size: 2.2rem; line-height: 1; color: #fff; }
+
+.doc a { color: var(--red-text) !important; }

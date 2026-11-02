@@ -14,6 +14,9 @@
   <meta property="og:locale" content="es_MX" />
   <meta name="twitter:card" content="summary" />
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "Huevo: proteína, calorías y cuántos comer al día", "description": "¿Cuánta proteína y calorías tiene un huevo? Datos de clara y yema, cuántos comer al día según la evidencia y cómo meterlo en tus macros.", "inLanguage": "es-MX", "datePublished": "2026-10-18", "dateModified": "2026-10-18", "author": {"@type": "Organization", "name": "Karga"}, "publisher": {"@type": "Organization", "name": "Karga", "url": "https://karga.fit"}, "mainEntityOfPage": "https://karga.fit/blog/huevo-proteina-calorias-cuantos-comer-al-dia.html"}, {"@type": "MobileApplication", "name": "Karga", "operatingSystem": "iOS", "applicationCategory": "HealthApplication", "url": "https://karga.fit", "description": "App de entrenamiento y nutrición que calcula calorías y macros según tu composición corporal.", "downloadUrl": "https://apps.apple.com/mx/app/karga/id6763583051", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "MXN"}, "inLanguage": "es-MX", "installUrl": "https://apps.apple.com/mx/app/karga/id6763583051"}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Cuánta proteína tienen 2 huevos?", "acceptedAnswer": {"@type": "Answer", "text": "Dos huevos grandes tienen alrededor de 12.6 g de proteína y 144 kcal, sin contar el aceite."}}, {"@type": "Question", "name": "¿Cuántas calorías tiene un huevo cocido?", "acceptedAnswer": {"@type": "Answer", "text": "Prácticamente las mismas que crudo: unas 72 kcal por huevo grande. Hervirlo no le suma calorías; freírlo sí, por el aceite."}}, {"@type": "Question", "name": "¿Es mejor comer el huevo crudo?", "acceptedAnswer": {"@type": "Answer", "text": "No. Un estudio publicado en The Journal of Nutrition (Evenepoel y colaboradores, 1998) encontró que el cuerpo aprovecha mucho mejor la proteína del huevo cocido que la del crudo. Además, el huevo crudo tiene riesgo de Salmonella."}}, {"@type": "Question", "name": "¿El huevo engorda?", "acceptedAnswer": {"@type": "Answer", "text": "Ningún alimento engorda por sí solo; depende de tu balance total de calorías. Un huevo tiene 72 kcal y mucha proteína, que ayuda a sentirte satisfecho. Lo que suele disparar las calorías es cómo lo preparas y con qué lo acompañas."}}, {"@type": "Question", "name": "¿Puedo comer huevo todos los días?", "acceptedAnswer": {"@type": "Answer", "text": "Para personas sanas, la evidencia respalda hasta un huevo entero al día sin aumento del riesgo cardiovascular. Si tienes colesterol alto, diabetes o algún problema del corazón, consulta con tu médico."}}, {"@type": "Question", "name": "¿La clara tiene toda la proteína del huevo?", "acceptedAnswer": {"@type": "Answer", "text": "No. La clara tiene unos 3.6 g y la yema unos 2.7 g, así que la yema aporta cerca del 40 % de la proteína."}}]}]}</script>
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="preload" href="/assets/fonts/archivo-wdth.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/assets/karga.css" />
   <link rel="stylesheet" href="/blog/blog.css" />
   <!-- PostHog: analítica del SITIO WEB karga.fit (no de la app). Todos los eventos llevan origen="sitio_web". -->
   <script>
@@ -33,12 +36,20 @@
   </script>
 </head>
 <body>
-  <div class="topbar"><div class="topbar-inner">
-    <a class="logo" href="/">KARGA</a>
-    <nav><a href="/">Inicio</a><a href="/blog/" class="on">Blog</a><a href="/#contact">Contacto</a></nav>
-  </div></div>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="logo" href="/" aria-label="Karga, inicio">KARGA</a>
+      <nav aria-label="Principal">
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a class="nav-extra" href="/karga-pro.html">Karga Pro</a>
+        <a href="/#contact">Contacto</a>
+      </nav>
+      <a class="btn btn-red" href="https://apps.apple.com/mx/app/karga/id6763583051">Descargar</a>
+    </div>
+  </header>
 
-  <div class="wrap">
+  <main class="wrap" id="contenido">
     <header class="post-head">
       <div class="post-meta"><span class="pill">Nutrición</span><span>18 oct 2026</span><span>·</span><span>6 min de lectura</span></div>
       <h1>Huevo: proteína, calorías y cuántos comer al día</h1>
@@ -157,10 +168,32 @@
         <li>Evenepoel P, Geypens B, Luypaerts A, et al. Digestibility of cooked and raw egg protein in humans as assessed by stable isotope techniques. J Nutr. 1998;128(10):1716-1722.</li>
       </ol>
     </article>
-  </div>
-  <footer>
-    <p>© 2026 Karga. Todos los derechos reservados.</p>
-    <p style="margin-top:.4rem;"><a href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a></p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div>
+        <a class="logo" href="/">KARGA</a>
+        <p>App de entrenamiento y nutrición para iPhone, con un plan de calorías y macros basado en tu cuerpo.</p>
+      </div>
+      <div>
+        <h2>Sitio</h2>
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="https://apps.apple.com/mx/app/karga/id6763583051">App Store</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Ayuda</h2>
+        <ul>
+          <li><a href="/karga-pro.html">Karga Pro</a></li>
+          <li><a href="/privacidad.html">Aviso de privacidad</a></li>
+          <li><a href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a></li>
+        </ul>
+      </div>
+      <p class="legal">© 2026 Karga. Todos los derechos reservados.</p>
+    </div>
   </footer>
 </body>
 </html>

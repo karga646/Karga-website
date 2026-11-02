@@ -6,6 +6,7 @@
   <title>Karga — App de entrenamiento y nutrición personalizada</title>
   <meta name="description" content="Karga es una app para iPhone que calcula tus calorías y macros según tu % de grasa, registra tus entrenamientos y sigue tu progreso. Descárgala en el App Store." />
   <link rel="canonical" href="https://karga.fit/" />
+  <meta name="theme-color" content="#ffffff" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Karga" />
   <meta property="og:title" content="Karga — App de entrenamiento y nutrición personalizada" />
@@ -13,281 +14,18 @@
   <meta property="og:url" content="https://karga.fit/" />
   <meta property="og:locale" content="es_MX" />
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "MobileApplication", "name": "Karga", "operatingSystem": "iOS", "applicationCategory": "HealthApplication", "url": "https://karga.fit", "description": "App de entrenamiento y nutrición que calcula calorías y macros según tu composición corporal.", "downloadUrl": "https://apps.apple.com/mx/app/karga/id6763583051", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "MXN"}, "inLanguage": "es-MX", "installUrl": "https://apps.apple.com/mx/app/karga/id6763583051"}</script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #0d0d0d;
-      --surface: #161616;
-      --border: #2a2a2a;
-      --accent: #E03333;
-      --text: #e8e8e8;
-      --muted: #888;
-      --radius: 12px;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      line-height: 1.7;
-      padding: 2rem 1rem 4rem;
-    }
-
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-    }
-
-    header {
-      text-align: center;
-      padding: 3rem 0 2rem;
-    }
-
-    .logo {
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      color: var(--accent);
-    }
-
-    header > p {
-      color: var(--muted);
-      margin-top: 0.4rem;
-      font-size: 0.9rem;
-    }
-
-    nav {
-      display: flex;
-      gap: 0.5rem;
-      justify-content: center;
-      margin: 1.8rem 0 0;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0;
-    }
-
-    nav button {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 0.65rem 1.2rem;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      transition: color 0.15s, border-color 0.15s;
-      font-family: inherit;
-    }
-
-    nav button:hover { color: var(--text); }
-
-    nav button.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
-
-    .section {
-      display: none;
-      padding-top: 3rem;
-    }
-
-    .section.active { display: block; }
-
-    h2.page-title { font-size: 1.9rem; font-weight: 700; color: var(--text); margin: 0 0 0.5rem; }
-    h1 {
-      font-size: 1.9rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    h2 {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin: 2.5rem 0 0.8rem;
-    }
-
-    p { margin-bottom: 1rem; color: var(--text); }
-
-    ul {
-      list-style: none;
-      margin-bottom: 1rem;
-      padding-left: 0;
-    }
-
-    ul li {
-      padding: 0.45rem 0 0.45rem 1.4rem;
-      position: relative;
-      color: var(--text);
-    }
-
-    ul li::before {
-      content: "→";
-      position: absolute;
-      left: 0;
-      color: var(--accent);
-      font-size: 0.85rem;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.4rem 1.6rem;
-      margin: 1.5rem 0;
-    }
-
-    .card strong {
-      color: var(--accent);
-      display: block;
-      margin-bottom: 0.3rem;
-      font-size: 0.95rem;
-    }
-
-    .badge {
-      display: inline-block;
-      background: var(--accent);
-      color: #000;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 0.15rem 0.55rem;
-      border-radius: 99px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin-left: 0.5rem;
-      vertical-align: middle;
-    }
-
-    .consent-box {
-      background: #1a1f07;
-      border: 1px solid var(--accent);
-      border-radius: var(--radius);
-      padding: 1.4rem 1.6rem;
-      margin: 2rem 0;
-    }
-
-    .consent-box p {
-      margin: 0;
-      font-size: 0.97rem;
-    }
-
-    /* Contact section */
-    .contact-hero {
-      text-align: center;
-      padding: 2rem 0 2.5rem;
-    }
-
-    .contact-hero .page-title {
-      margin-bottom: 0.7rem;
-    }
-
-    .contact-hero p {
-      color: var(--muted);
-      max-width: 480px;
-      margin: 0 auto 2rem;
-    }
-
-    .contact-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-      text-align: center;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-
-    .contact-card .icon {
-      font-size: 2rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .contact-card h3 {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.4rem;
-    }
-
-    .contact-card p {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 1.4rem;
-    }
-
-    .btn-email {
-      display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.95rem;
-      font-weight: 700;
-      padding: 0.75rem 1.8rem;
-      border-radius: 99px;
-      text-decoration: none;
-      transition: opacity 0.15s;
-    }
-
-    .btn-email:hover { opacity: 0.85; }
-
-    .contact-note {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.82rem;
-      margin-top: 1.4rem;
-    }
-
-    .price-box {
-      background: var(--surface);
-      border: 1px solid var(--accent);
-      border-radius: var(--radius);
-      padding: 1.4rem 1.6rem;
-      margin: 2rem 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .price-box .label { font-weight: 700; font-size: 1.05rem; }
-    .price-box .amount { font-weight: 800; font-size: 1.3rem; color: var(--accent); }
-
-    footer {
-      margin-top: 4rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    footer a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    /* Galería de capturas de la app */
-    .capturas { margin: 2rem 0 1.5rem; }
-    .capturas h2 { font-size: 1.25rem; margin-bottom: .4rem; }
-    .capturas > p { color: var(--muted); margin-bottom: 1rem; }
-    .capturas-fila {
-      display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory;
-      padding-bottom: .75rem; -webkit-overflow-scrolling: touch;
-    }
-    .capturas figure {
-      flex: 0 0 auto; width: 220px; margin: 0; scroll-snap-align: start;
-      background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: .6rem;
-    }
-    .capturas img { display: block; width: 100%; height: auto; border-radius: 14px; }
-    .capturas figcaption { font-size: .85rem; color: var(--muted); margin-top: .55rem; line-height: 1.35; }
-    @media (min-width: 720px) { .capturas-fila { overflow-x: visible; } .capturas figure { flex: 1 1 0; width: auto; } }
-    @media (max-width: 480px) {
-      h1, h2.page-title { font-size: 1.5rem; }
-      .card { padding: 1rem 1.2rem; }
-      .contact-card { padding: 1.5rem 1.2rem; }
-    }
-  </style>
+  <link rel="preload" href="/assets/fonts/archivo-wdth.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/assets/karga.css" />
+  <link rel="stylesheet" href="/assets/home.css" />
+  <script>
+    document.documentElement.classList.add('js');
+    // Enlaces antiguos (por ejemplo desde la app): karga.fit/#pro y karga.fit/#privacy ahora son páginas propias.
+    (function () {
+      var h = window.location.hash;
+      if (h === '#pro') window.location.replace('/karga-pro.html');
+      else if (h === '#privacy') window.location.replace('/privacidad.html');
+    })();
+  </script>
   <!-- PostHog: analítica del SITIO WEB karga.fit (no de la app). Todos los eventos llevan origen="sitio_web". -->
   <script>
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -306,114 +44,260 @@
   </script>
 </head>
 <body>
-  <div class="container">
+  <a class="skip" href="#contenido">Saltar al contenido</a>
 
-    <header>
-      <div class="logo">KARGA</div>
-      <p>karga.fit</p>
-      <nav>
-        <button class="active" onclick="showSection('about', this)">Inicio</button>
-        <button onclick="location.href='/blog/'">Blog</button>
-        <button onclick="showSection('contact', this)">Contacto</button>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="logo" href="/" aria-label="Karga, inicio">KARGA</a>
+      <nav aria-label="Principal">
+        <a href="/blog/">Blog</a>
+        <a class="nav-extra" href="/karga-pro.html">Karga Pro</a>
+        <a href="/#contact">Contacto</a>
       </nav>
-    </header>
+      <a class="btn btn-red" href="https://apps.apple.com/mx/app/karga/id6763583051">Descargar</a>
+    </div>
+  </header>
 
-    <!-- Aviso de Privacidad -->
-    <!-- Inicio -->
-    <div id="about" class="section active">
-      <h1>Karga: entrenamiento y nutrición hechos a tu medida</h1>
-      <p>Karga es una app para <strong>registrar tus entrenamientos y tu alimentación</strong> con un plan de calorías y macros calculado a partir de tu <strong>porcentaje de grasa y tu composición corporal</strong>. Ya sea que quieras ganar músculo, bajar grasa o recomponer, la app ajusta tu plan en cada check-in.</p>
-      <ul>
-        <li>Calorías y macros personalizados (definición, recomposición o volumen limpio)</li>
-        <li>Registro de rutinas, series, repeticiones y pesos</li>
-        <li>Escáner de código de barras y foto de tu platillo con IA</li>
-        <li>Karga Food, asistente de nutrición con IA</li>
-        <li>Calendario y puntos para ver tu progreso hasta tu meta</li>
-      </ul>
-      <section class="capturas" aria-labelledby="capturas-titulo">
-        <h2 id="capturas-titulo">Así se ve Karga</h2>
-        <p>Tu dieta personalizada y el registro de comidas, con calorías y macros calculados para ti.</p>
-        <div class="capturas-fila">
-          <figure>
-            <img src="/img/karga-food-plan.webp" width="600" height="1190" loading="lazy" decoding="async"
-                 alt="Karga Food: plan de alimentación del jueves con 4 comidas, 2134 kcal, 123 g de proteína, 268 g de carbohidratos y 63 g de grasa">
-            <figcaption><strong>Karga Food</strong> arma tu dieta de la semana con tus calorías y macros.</figcaption>
+  <main id="contenido">
+
+    <!-- ═════════ Hero ═════════ -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <h1>
+            <span class="line"><span>Tu plan de</span></span>
+            <span class="line"><span>calorías, hecho</span></span>
+            <span class="line"><span>con tu cuerpo.</span></span>
+          </h1>
+          <p class="hero-lead">Karga calcula tus calorías y macros con tu peso, estatura y % de grasa, y los ajusta en cada check-in. También registra tus comidas y tus entrenamientos.</p>
+          <div class="hero-actions">
+            <a class="btn btn-red" href="https://apps.apple.com/mx/app/karga/id6763583051">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+              Descargar en el App Store
+            </a>
+            <a class="btn btn-ghost" href="#como-funciona">Cómo funciona</a>
+          </div>
+          <p class="hero-note">Gratis para iPhone.</p>
+        </div>
+
+        <div class="scene">
+          <div class="phone">
+            <img src="/img/registro-de-comidas.webp" width="600" height="1214" fetchpriority="high"
+                 alt="Pantalla de registro de comidas de Karga con calorías restantes y barras de proteína, carbohidratos y grasas" />
+          </div>
+
+          <div class="plan" data-plan>
+            <div class="plan-head">
+              <h2>Tu plan diario</h2>
+              <span>Ejemplo</span>
+            </div>
+            <div class="modes" role="group" aria-label="Modo del plan">
+              <span class="thumb" aria-hidden="true"></span>
+              <button type="button" data-mode="definicion" aria-pressed="true">Definición</button>
+              <button type="button" data-mode="recomposicion" aria-pressed="false">Recomposición</button>
+              <button type="button" data-mode="volumen" aria-pressed="false">Volumen limpio</button>
+            </div>
+            <div class="kcal" aria-live="polite"><b data-kcal>2,060</b><span>kcal al día</span></div>
+            <p class="mode-desc" data-desc>Comes un poco menos de lo que gastas para bajar grasa sin perder músculo.</p>
+            <ul class="macros">
+              <li data-m="p"><span class="name">Proteína</span><span class="bar p"><i></i></span><span class="val"><span>165</span> g</span></li>
+              <li data-m="c"><span class="name">Carbohidratos</span><span class="bar c"><i></i></span><span class="val"><span>215</span> g</span></li>
+              <li data-m="f"><span class="name">Grasa</span><span class="bar f"><i></i></span><span class="val"><span>60</span> g</span></li>
+            </ul>
+            <p class="plan-foot">Ejemplo para una persona de 75 kg con 18 % de grasa. En la app se calcula con tus propios datos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════ Cómo funciona ═════════ -->
+    <section class="section how" id="como-funciona">
+      <div class="wrap how-grid">
+        <div class="how-sticky">
+          <h2 class="section-title">Un plan que cambia contigo.</h2>
+          <p class="section-intro">Nada de fórmulas genéricas: Karga parte de tu composición corporal y revisa tu plan conforme avanzas.</p>
+        </div>
+        <div class="steps">
+          <span class="progress" aria-hidden="true"></span>
+          <ol>
+          <li>
+            <span class="num" aria-hidden="true">1</span>
+            <h3>Cuéntale a Karga de ti</h3>
+            <p>Tu peso, estatura, nivel de actividad, experiencia, días de gimnasio y % de grasa. Si no sabes tu % de grasa, la IA lo estima con una foto.</p>
+          </li>
+          <li>
+            <span class="num" aria-hidden="true">2</span>
+            <h3>Karga elige tu modo</h3>
+            <p>Con tu % de grasa y tu FFMI te asigna un modo y calcula tus calorías y macros.</p>
+            <div class="mode-chips"><span>Definición</span><span>Recomposición</span><span>Volumen limpio</span></div>
+          </li>
+          <li>
+            <span class="num" aria-hidden="true">3</span>
+            <h3>Registra tu día</h3>
+            <p>Tus comidas con búsqueda, código de barras o una foto del platillo, y tus entrenamientos con series, repeticiones y pesos.</p>
+          </li>
+          <li>
+            <span class="num" aria-hidden="true">4</span>
+            <h3>Haz tu check-in</h3>
+            <p>Cada cierto tiempo actualizas tu peso y % de grasa. Karga vuelve a clasificarte y ajusta tus calorías y macros.</p>
+          </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════ Capturas ═════════ -->
+    <section class="section" id="capturas">
+      <div class="wrap">
+        <div class="shots-head">
+          <h2 class="section-title">Así se ve Karga.</h2>
+          <p class="section-intro">Tu dieta, tus comidas y tus números del día, en una sola app.</p>
+        </div>
+        <div class="shots">
+          <figure class="shot" data-reveal>
+            <div class="phone"><img src="/img/karga-food-plan.webp" width="600" height="1190" loading="lazy" decoding="async"
+              alt="Karga Food: plan de alimentación del jueves con 4 comidas, 2134 kcal, 123 g de proteína, 268 g de carbohidratos y 63 g de grasa" /></div>
+            <figcaption><b>Karga Food</b>Arma tu dieta de la semana con tus calorías y macros. Pídele cambios en el chat.</figcaption>
           </figure>
-          <figure>
-            <img src="/img/karga-food-detalle.webp" width="600" height="1156" loading="lazy" decoding="async"
-                 alt="Detalle de una comida en Karga Food: yogur griego con fresas y manzana, con gramos, calorías y macros de cada alimento">
-            <figcaption>Cada comida trae los gramos y los macros de cada alimento.</figcaption>
+          <figure class="shot" data-reveal>
+            <div class="phone"><img src="/img/karga-food-detalle.webp" width="600" height="1156" loading="lazy" decoding="async"
+              alt="Detalle de una comida en Karga Food: yogur griego con fresas y manzana, con gramos, calorías y macros de cada alimento" /></div>
+            <figcaption><b>Cada alimento, en gramos</b>Cada comida trae las cantidades y los macros de cada ingrediente.</figcaption>
           </figure>
-          <figure>
-            <img src="/img/registro-de-comidas.webp" width="600" height="1214" loading="lazy" decoding="async"
-                 alt="Registro de comidas en Karga: calorías restantes del día y barras de proteína, carbohidratos y grasas">
-            <figcaption><strong>Registro de comidas</strong>: ve cuántas calorías y macros te faltan en el día.</figcaption>
+          <figure class="shot" data-reveal>
+            <div class="phone"><img src="/img/registro-de-comidas.webp" width="600" height="1214" loading="lazy" decoding="async"
+              alt="Registro de comidas en Karga: calorías restantes del día y barras de proteína, carbohidratos y grasas" /></div>
+            <figcaption><b>Registro de comidas</b>Ve cuántas calorías y macros te faltan en el día.</figcaption>
           </figure>
         </div>
-      </section>
-      <p><a href="https://apps.apple.com/mx/app/karga/id6763583051" style="display:inline-block;background:var(--accent);color:#fff;font-weight:700;text-decoration:none;padding:.8rem 1.6rem;border-radius:99px;">Descargar en el App Store</a></p>
-      <p style="color:var(--muted);font-size:.9rem;">¿Buscas el aviso de privacidad de la app? <a href="/privacidad.html" style="color:var(--accent);">Léelo aquí</a>.</p>
-      <p>Lee más en el <a href="/blog/" style="color:var(--accent);">blog</a>: <a href="/blog/que-es-karga-app-de-entrenamiento-y-nutricion.html" style="color:var(--accent);">qué es Karga y cómo funciona</a>.</p>
-      <footer>
-        <p><a href="/privacidad.html">Aviso de Privacidad</a> · <a href="/karga-pro.html">Karga Pro</a> · <a href="/blog/">Blog</a></p>
-        <p style="margin-top: 0.4rem;">© 2026 Karga. Todos los derechos reservados.</p>
-      </footer>
-    </div><!-- /about -->
-
-
-    <!-- Karga Pro -->
-
-    <!-- Contacto -->
-    <div id="contact" class="section">
-
-      <div class="contact-hero">
-        <h2 class="page-title">Contáctanos</h2>
-        <p>¿Tienes dudas, sugerencias o necesitas ayuda? Escríbenos y te respondemos a la brevedad.</p>
       </div>
+    </section>
 
-      <div class="contact-card">
-        <div class="icon">✉️</div>
-        <h3>Correo electrónico</h3>
-        <p>Disponible para cualquier consulta sobre la app, tu cuenta o privacidad.</p>
-        <a class="btn-email" href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a>
+    <!-- ═════════ Funciones ═════════ -->
+    <section class="section" id="funciones">
+      <div class="wrap features-grid">
+        <div class="features-title">
+          <h2 class="section-title">Gym, comida y progreso en un solo lugar.</h2>
+        </div>
+        <ul class="features">
+          <li data-reveal>
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></span>
+            <div><h3>Registro de entrenamientos</h3><p>Días, ejercicios, series, repeticiones, pesos e historial de cada ejercicio. La IA puede crear tu rutina a partir de un texto o un archivo, e importar tus entrenamientos pasados.</p></div>
+          </li>
+          <li data-reveal>
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><circle cx="12" cy="12" r="3.5"/></svg></span>
+            <div><h3>Comidas con escáner y foto</h3><p>Busca alimentos, arma tus platillos, escanea códigos de barras o toma una foto: la IA identifica los alimentos y los gramos, y el sistema calcula los macros.</p></div>
+          </li>
+          <li data-reveal>
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.8 7L4 20l1.1-4.6A8 8 0 1 1 21 12Z"/><path d="M8.5 11h7M8.5 14h4"/></svg></span>
+            <div><h3>Karga Food</h3><p>Un asistente de nutrición con IA que te propone dietas con tus macros. No sustituye a un médico ni a un nutriólogo.</p></div>
+          </li>
+          <li data-reveal>
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/></svg></span>
+            <div><h3>Progreso hacia tu meta</h3><p>Un calendario marca los días en que cumpliste comida y entrenamiento, y un sistema de puntos te muestra cuánto falta para tu meta.</p></div>
+          </li>
+          <li data-reveal>
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><path d="M8 21v-6l-2-1 1.5-5.5h9L18 14l-2 1v6"/><path d="M12 8.5V21"/></svg></span>
+            <div><h3>% de grasa con IA</h3><p>Estima tu porcentaje de grasa a partir de una foto para que tu plan parta de un dato real.</p></div>
+          </li>
+        </ul>
       </div>
+    </section>
 
-      <p class="contact-note">Respondemos en un plazo de 1 a 3 días hábiles.</p>
+    <!-- ═════════ Precio ═════════ -->
+    <section class="section" id="precio" style="padding-top:0">
+      <div class="wrap">
+        <div class="pricing" data-reveal>
+          <h2 class="section-title">Empieza gratis. Pro si quieres más IA.</h2>
+          <div class="price-cols">
+            <div class="price-col">
+              <h3>Karga</h3>
+              <div class="amount">$0</div>
+              <p>Plan de calorías y macros, registro de comidas y entrenamientos, y progreso. Las funciones con IA tienen límites de uso.</p>
+            </div>
+            <div class="price-col pro">
+              <h3>Karga Pro</h3>
+              <div class="amount">$99 <small>MXN al mes</small></div>
+              <p>Quita los límites de las funciones con IA. Se cancela cuando quieras desde tu Apple ID. <a href="/karga-pro.html">Ver qué incluye</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <footer>
-        <p><a href="/privacidad.html">Aviso de Privacidad</a> · <a href="/karga-pro.html">Karga Pro</a> · <a href="/blog/">Blog</a></p>
-        <p style="margin-top: 0.4rem;">© 2026 Karga. Todos los derechos reservados.</p>
-      </footer>
+    <!-- ═════════ Blog ═════════ -->
+    <section class="section" id="blog" style="padding-top:0">
+      <div class="wrap">
+        <h2 class="section-title">Del blog.</h2>
+        <ul class="posts">
+          <li><a href="/blog/caracteristicas-dieta-correcta-nom-043.html">
+            <div><h3>Las 6 características de una dieta correcta (NOM-043)</h3><p>Qué significa cada una y cómo aplicarlas si vas al gimnasio.</p></div>
+            <span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a></li>
+          <li><a href="/blog/huevo-proteina-calorias-cuantos-comer-al-dia.html">
+            <div><h3>Huevo: proteína, calorías y cuántos comer al día</h3><p>Clara, yema y lo que dice la evidencia sobre el colesterol.</p></div>
+            <span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a></li>
+          <li><a href="/blog/que-es-karga-app-de-entrenamiento-y-nutricion.html">
+            <div><h3>Karga: la app de entrenamiento y nutrición que ajusta tu plan a tu cuerpo</h3><p>Cómo funciona y qué la hace diferente.</p></div>
+            <span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a></li>
+        </ul>
+      </div>
+    </section>
 
-    </div><!-- /contact -->
+    <!-- ═════════ Llamado final ═════════ -->
+    <section class="final">
+      <div class="wrap" data-reveal>
+        <h2 class="section-title">Deja de adivinar cuánto comer.</h2>
+        <p>Descarga Karga y obtén un plan de calorías y macros calculado con tu cuerpo.</p>
+        <a class="btn btn-red" href="https://apps.apple.com/mx/app/karga/id6763583051">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Descargar en el App Store
+        </a>
+      </div>
+    </section>
 
-  </div>
+    <!-- ═════════ Contacto ═════════ -->
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <div class="contact-box">
+          <div>
+            <h2>¿Dudas o sugerencias?</h2>
+            <p>Escríbenos sobre la app, tu cuenta o tu privacidad. Respondemos en 1 a 3 días hábiles.</p>
+          </div>
+          <a class="btn btn-ink" href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  <script>
-    // Enlaces antiguos (por ejemplo desde la app): karga.fit/#pro y karga.fit/#privacy ahora son páginas propias.
-    (function () {
-      var h = window.location.hash;
-      if (h === '#pro') window.location.replace('/karga-pro.html');
-      else if (h === '#privacy') window.location.replace('/privacidad.html');
-    })();
-    function showSection(id, btn) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      btn.classList.add('active');
-      history.replaceState(null, '', '#' + id);
-    }
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div>
+        <a class="logo" href="/">KARGA</a>
+        <p>App de entrenamiento y nutrición para iPhone, con un plan de calorías y macros basado en tu cuerpo.</p>
+      </div>
+      <div>
+        <h2>Sitio</h2>
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="https://apps.apple.com/mx/app/karga/id6763583051">App Store</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Ayuda</h2>
+        <ul>
+          <li><a href="/karga-pro.html">Karga Pro</a></li>
+          <li><a href="/privacidad.html">Aviso de privacidad</a></li>
+          <li><a href="mailto:kargaoficial@gmail.com">kargaoficial@gmail.com</a></li>
+        </ul>
+      </div>
+      <p class="legal">© 2026 Karga. Todos los derechos reservados.</p>
+    </div>
+  </footer>
 
-    // Deep link support: https://karga.fit/#pro abre la pestaña Karga Pro directo
-    (function () {
-      const id = window.location.hash.replace('#', '');
-      const section = id && document.getElementById(id);
-      if (section) {
-        const btn = Array.from(document.querySelectorAll('nav button'))
-          .find(b => b.getAttribute('onclick')?.includes(`'${id}'`));
-        if (btn) showSection(id, btn);
-      }
-    })();
-  </script>
+  <script src="/assets/home.js" defer></script>
 </body>
 </html>
