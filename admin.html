@@ -20,6 +20,126 @@
       --radius: 12px;
       --blue: #0A84FF;
       --green: #34C759;
+      /* ── Fuentes section ── */
+      .fuentes-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      @media (max-width: 700px) { .fuentes-grid { grid-template-columns: 1fr; } }
+
+      .fuentes-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.2rem 1.4rem;
+      }
+      .fuentes-card h3 {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: var(--muted);
+        margin-bottom: 1rem;
+      }
+      .src-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.6rem;
+        font-size: 0.9rem;
+      }
+      .src-label { flex: 1; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .src-bar-wrap { flex: 2; background: var(--surface-2); border-radius: 4px; height: 8px; overflow: hidden; }
+      .src-bar { height: 100%; border-radius: 4px; background: var(--accent); transition: width .4s; }
+      .src-bar.plat-tiktok   { background: #69C9D0; }
+      .src-bar.plat-instagram { background: #E1306C; }
+      .src-bar.plat-facebook  { background: #1877F2; }
+      .src-bar.plat-youtube   { background: #FF0000; }
+      .src-bar.plat-otra      { background: #818cf8; }
+      .src-num { min-width: 2.5rem; text-align: right; color: var(--muted); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+      .src-empty { color: var(--muted); font-size: 0.88rem; padding: 0.5rem 0; }
+
+      .asc-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.4rem; }
+      .asc-pill {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.5rem 0.9rem;
+        font-size: 0.82rem;
+      }
+      .asc-pill span { display: block; color: var(--muted); font-size: 0.72rem; margin-bottom: 0.1rem; }
+      .asc-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 0.9rem;
+        font-size: 0.82rem;
+        color: var(--blue);
+        text-decoration: none;
+      }
+      .asc-link:hover { text-decoration: underline; }
+      .asc-status { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
+      .asc-err { color: #f87171; font-size: 0.82rem; margin-top: 0.4rem; }
+      .btn-asc-refresh {
+        margin-top: 0.9rem;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 0.82rem;
+        padding: 0.4rem 0.9rem;
+        cursor: pointer;
+      }
+      .btn-asc-refresh:hover { background: var(--border); }
+
+      .content-tracker { margin-top: 1.5rem; }
+      .ct-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
+      .ct-top h2 { font-size: 1rem; }
+      .btn-add-ct {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 0.82rem;
+        padding: 0.4rem 0.9rem;
+        cursor: pointer;
+      }
+      .btn-add-ct:hover { background: var(--border); }
+
+      .ct-form {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem 1.2rem;
+        margin-bottom: 1rem;
+        display: none;
+      }
+      .ct-row { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+      .ct-field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 130px; }
+      .ct-field label { font-size: 0.75rem; color: var(--muted); }
+      .ct-input, .ct-select {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.5rem 0.7rem;
+        color: var(--text);
+        font-size: 0.88rem;
+        font-family: inherit;
+      }
+      .ct-input:focus, .ct-select:focus { outline: none; border-color: var(--accent); }
+      .ct-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+      .btn-ct-cancel { background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); padding: 0.4rem 0.9rem; cursor: pointer; font-size: 0.85rem; }
+      .btn-ct-save { background: var(--accent); border: none; border-radius: 8px; color: #fff; padding: 0.4rem 0.9rem; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+
+      .ct-table-wrap { overflow-x: auto; }
+      .ct-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+      .ct-table th { text-align: left; padding: 0.5rem 0.7rem; color: var(--muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+      .ct-table td { padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+      .ct-table tr:last-child td { border-bottom: none; }
+      .ct-conv { color: var(--plan-green); font-size: 0.8rem; font-weight: 600; }
+      .ct-empty { text-align: center; color: var(--muted); padding: 1.5rem; font-size: 0.88rem; }
+
       /* Plan section tokens */
       --plan-green: #10b981;
       --plan-green-bg: rgba(16,185,129,.12);
@@ -837,6 +957,7 @@
       <nav class="tab-nav">
         <button class="tab-nav-btn active" data-section="soporte">Soporte</button>
         <button class="tab-nav-btn" data-section="plan">Plan</button>
+        <button class="tab-nav-btn" data-section="fuentes">Fuentes</button>
       </nav>
       <button id="signout-btn" class="signout-btn">Cerrar sesión</button>
     </header>
@@ -959,6 +1080,7 @@
             <div class="rf-field"><label>Clics</label><input class="rf-input" id="f-clics" type="number" placeholder="0" min="0"></div>
             <div class="rf-field"><label>Descargas</label><input class="rf-input" id="f-descargas" type="number" placeholder="0" min="0"></div>
             <div class="rf-field"><label>Notas</label><input class="rf-input" id="f-notas" placeholder="Qué funcionó, qué no…"></div>
+            <div class="rf-field"><label>Fuente / Contenido</label><input class="rf-input" id="f-fuente" placeholder="Reel #3, Post grupo FB…"></div>
           </div>
           <div class="rf-actions">
             <button class="btn-rf-cancel" onclick="toggleResultForm()">Cancelar</button>
@@ -971,7 +1093,7 @@
             <thead>
               <tr>
                 <th>Semana</th><th>Fecha</th><th>Acción</th><th>Plataforma</th>
-                <th>Vistas</th><th>Clics</th><th>Descargas</th><th>Notas</th><th></th>
+                <th>Fuente</th><th>Vistas</th><th>Clics</th><th>Descargas</th><th>Notas</th><th></th>
               </tr>
             </thead>
             <tbody id="res-tbody"></tbody>
@@ -983,6 +1105,78 @@
         </div>
       </div>
     </div><!-- /section-plan -->
+
+    <!-- ── Fuentes ── -->
+    <div id="section-fuentes" class="section-wrap hidden" style="max-width:860px;margin:0 auto;padding:1.5rem 1rem;">
+
+      <div class="fuentes-grid">
+        <!-- Descargas por plataforma -->
+        <div class="fuentes-card">
+          <h3>Descargas por plataforma</h3>
+          <div id="src-plat-list"><p class="src-empty">Agrega resultados con descargas para ver el desglose.</p></div>
+        </div>
+        <!-- Descargas por contenido -->
+        <div class="fuentes-card">
+          <h3>Descargas por contenido</h3>
+          <div id="src-cont-list"><p class="src-empty">Registra contenidos en el tracker de abajo para ver el desglose.</p></div>
+        </div>
+      </div>
+
+      <!-- App Store Connect card -->
+      <div class="fuentes-card" style="margin-bottom:1.5rem;">
+        <h3>App Store Connect</h3>
+        <div id="asc-data">
+          <p class="asc-status">Cargando datos…</p>
+        </div>
+        <button class="btn-asc-refresh" onclick="loadASC()">↻ Actualizar</button>
+        <a class="asc-link" href="https://appstoreconnect.apple.com/analytics/app/appStore/6763583051/overview" target="_blank">
+          Ver Analytics completo en App Store Connect ↗
+        </a>
+      </div>
+
+      <!-- Content tracker -->
+      <div class="content-tracker">
+        <div class="ct-top">
+          <h2>Rastreo de Contenido</h2>
+          <button class="btn-add-ct" onclick="toggleCTForm()">+ Registrar contenido</button>
+        </div>
+
+        <div class="ct-form" id="ct-form">
+          <div class="ct-row">
+            <div class="ct-field"><label>Contenido</label><input class="ct-input" id="ct-nombre" placeholder="Reel gym tutorial #3"></div>
+            <div class="ct-field"><label>Plataforma</label>
+              <select class="ct-select" id="ct-plat">
+                <option>TikTok</option><option>Instagram</option><option>YouTube</option><option>Facebook</option><option>Otra</option>
+              </select>
+            </div>
+            <div class="ct-field"><label>Fecha</label><input class="ct-input" id="ct-fecha" type="date"></div>
+          </div>
+          <div class="ct-row">
+            <div class="ct-field"><label>Vistas</label><input class="ct-input" id="ct-vistas" type="number" placeholder="0" min="0"></div>
+            <div class="ct-field"><label>Descargas atribuidas</label><input class="ct-input" id="ct-descargas" type="number" placeholder="0" min="0"></div>
+            <div class="ct-field"><label>Notas</label><input class="ct-input" id="ct-notas" placeholder="Qué funcionó…"></div>
+          </div>
+          <div class="ct-actions">
+            <button class="btn-ct-cancel" onclick="toggleCTForm()">Cancelar</button>
+            <button class="btn-ct-save" onclick="saveCT()">Guardar</button>
+          </div>
+        </div>
+
+        <div class="fuentes-card ct-table-wrap">
+          <table class="ct-table">
+            <thead>
+              <tr>
+                <th>Contenido</th><th>Plataforma</th><th>Fecha</th>
+                <th>Vistas</th><th>Descargas</th><th>Conversión</th><th>Notas</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="ct-tbody"></tbody>
+          </table>
+          <div id="ct-empty" class="ct-empty">Todavía no hay contenido registrado. Agrega tu primer video o post.</div>
+        </div>
+      </div>
+    </div><!-- /section-fuentes -->
+
   </div><!-- /dashboard -->
 
   <!-- ── Ticket modal ── -->
@@ -1107,6 +1301,8 @@
       dashboard.classList.remove('hidden');
       loadTickets();
       loadPlan();
+      loadContentItems();
+      renderCTTable();
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -1119,6 +1315,8 @@
         const sec = btn.dataset.section;
         document.getElementById('section-soporte').classList.toggle('hidden', sec !== 'soporte');
         document.getElementById('section-plan').classList.toggle('hidden', sec !== 'plan');
+        document.getElementById('section-fuentes').classList.toggle('hidden', sec !== 'fuentes');
+        if (sec === 'fuentes') { renderFuentesBreakdown(); loadASC(); }
       });
     });
 
@@ -1463,6 +1661,7 @@
           <td>${esc(r.fecha)}</td>
           <td>${esc(r.accion)}</td>
           <td>${esc(r.plat)}</td>
+          <td class="td-note" title="${esc(r.fuente)}">${esc(r.fuente) || '—'}</td>
           <td class="td-num">${r.vistas || '—'}</td>
           <td class="td-num">${r.clics || '—'}</td>
           <td class="td-num">${r.descargas || '—'}</td>
@@ -1496,12 +1695,13 @@
         fecha:     document.getElementById('f-fecha').value,
         accion,
         plat:      document.getElementById('f-plat').value,
+        fuente:    document.getElementById('f-fuente').value.trim(),
         vistas:    document.getElementById('f-vistas').value,
         clics:     document.getElementById('f-clics').value,
         descargas: document.getElementById('f-descargas').value,
         notas:     document.getElementById('f-notas').value.trim(),
       });
-      ['f-semana','f-accion','f-vistas','f-clics','f-descargas','f-notas'].forEach(id => {
+      ['f-semana','f-accion','f-vistas','f-clics','f-descargas','f-notas','f-fuente'].forEach(id => {
         document.getElementById(id).value = '';
       });
       document.getElementById('add-result-form').style.display = 'none';
@@ -1511,6 +1711,166 @@
     function deleteResult(id) {
       results = results.filter(r => r.id !== id);
       savePlan(); renderResults();
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       FUENTES — breakdown charts
+       ══════════════════════════════════════════════════════════ */
+    let contentItems = [];
+
+    function loadContentItems() {
+      try {
+        const c = localStorage.getItem('karga_content');
+        contentItems = c ? JSON.parse(c) : [];
+      } catch(e) { contentItems = []; }
+    }
+
+    function saveContentItems() {
+      try { localStorage.setItem('karga_content', JSON.stringify(contentItems)); } catch(e) {}
+    }
+
+    function renderFuentesBreakdown() {
+      loadContentItems();
+
+      /* ── Descargas por plataforma (from results) ── */
+      const platMap = {};
+      results.forEach(r => {
+        const d = parseInt(r.descargas) || 0;
+        if (!d) return;
+        const p = r.plat || 'Otra';
+        platMap[p] = (platMap[p] || 0) + d;
+      });
+      const platEntries = Object.entries(platMap).sort((a,b) => b[1]-a[1]);
+      const platMax = platEntries.length ? platEntries[0][1] : 1;
+      const platEl = document.getElementById('src-plat-list');
+      if (!platEntries.length) {
+        platEl.innerHTML = '<p class="src-empty">Agrega resultados con descargas para ver el desglose.</p>';
+      } else {
+        platEl.innerHTML = platEntries.map(([plat, num]) => {
+          const pct = Math.round((num / platMax) * 100);
+          const cls = 'plat-' + plat.toLowerCase();
+          return `<div class="src-row">
+            <span class="src-label">${esc(plat)}</span>
+            <div class="src-bar-wrap"><div class="src-bar ${cls}" style="width:${pct}%"></div></div>
+            <span class="src-num">${num}</span>
+          </div>`;
+        }).join('');
+      }
+
+      /* ── Descargas por contenido (from contentItems) ── */
+      const contMap = {};
+      contentItems.forEach(c => {
+        const d = parseInt(c.descargas) || 0;
+        if (!d) return;
+        const key = c.nombre || 'Sin nombre';
+        contMap[key] = (contMap[key] || 0) + d;
+      });
+      const contEntries = Object.entries(contMap).sort((a,b) => b[1]-a[1]).slice(0, 8);
+      const contMax = contEntries.length ? contEntries[0][1] : 1;
+      const contEl = document.getElementById('src-cont-list');
+      if (!contEntries.length) {
+        contEl.innerHTML = '<p class="src-empty">Registra contenidos en el tracker de abajo para ver el desglose.</p>';
+      } else {
+        contEl.innerHTML = contEntries.map(([nombre, num]) => `
+          <div class="src-row">
+            <span class="src-label">${esc(nombre)}</span>
+            <div class="src-bar-wrap"><div class="src-bar" style="width:${Math.round((num/contMax)*100)}%"></div></div>
+            <span class="src-num">${num}</span>
+          </div>`).join('');
+      }
+    }
+
+    /* ── App Store Connect live data ── */
+    const ASC_FN = 'https://ugnbxdszrraxkzabbfns.supabase.co/functions/v1/appstore-analytics';
+    let ascLoaded = false;
+
+    async function loadASC() {
+      if (ascLoaded) return;
+      const el = document.getElementById('asc-data');
+      el.innerHTML = '<p class="asc-status">Conectando con App Store Connect…</p>';
+      try {
+        const r = await fetch(ASC_FN + '?action=app-info');
+        const j = await r.json();
+        if (j.data) {
+          const a = j.data.attributes;
+          el.innerHTML = `
+            <div class="asc-row">
+              <div class="asc-pill"><span>App</span>${esc(a.name)}</div>
+              <div class="asc-pill"><span>Bundle ID</span>${esc(a.bundleId)}</div>
+              <div class="asc-pill"><span>Apple ID</span>6763583051</div>
+              <div class="asc-pill"><span>Locale</span>${esc(a.primaryLocale)}</div>
+            </div>
+            <p class="asc-status" style="margin-top:.6rem">✓ Conexión activa con App Store Connect API</p>`;
+          ascLoaded = true;
+        } else {
+          el.innerHTML = `<p class="asc-err">Error: ${esc(JSON.stringify(j))}</p>`;
+        }
+      } catch(e) {
+        el.innerHTML = `<p class="asc-err">No se pudo conectar: ${esc(e.message)}</p>`;
+      }
+    }
+
+    /* ── Content tracker ── */
+    function toggleCTForm() {
+      const f = document.getElementById('ct-form');
+      const show = f.style.display === 'none' || !f.style.display;
+      f.style.display = show ? 'block' : 'none';
+      if (show) {
+        document.getElementById('ct-fecha').value = new Date().toISOString().slice(0,10);
+        document.getElementById('ct-nombre').focus();
+      }
+    }
+
+    function saveCT() {
+      const nombre = document.getElementById('ct-nombre').value.trim();
+      if (!nombre) { document.getElementById('ct-nombre').focus(); return; }
+      contentItems.unshift({
+        id:        'c' + Date.now(),
+        nombre,
+        plat:      document.getElementById('ct-plat').value,
+        fecha:     document.getElementById('ct-fecha').value,
+        vistas:    document.getElementById('ct-vistas').value,
+        descargas: document.getElementById('ct-descargas').value,
+        notas:     document.getElementById('ct-notas').value.trim(),
+      });
+      ['ct-nombre','ct-vistas','ct-descargas','ct-notas'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('ct-form').style.display = 'none';
+      saveContentItems();
+      renderCTTable();
+      renderFuentesBreakdown();
+    }
+
+    function deleteCT(id) {
+      contentItems = contentItems.filter(c => c.id !== id);
+      saveContentItems();
+      renderCTTable();
+      renderFuentesBreakdown();
+    }
+
+    function renderCTTable() {
+      const tbody = document.getElementById('ct-tbody');
+      const empty = document.getElementById('ct-empty');
+      tbody.innerHTML = '';
+      if (!contentItems.length) { empty.style.display = ''; return; }
+      empty.style.display = 'none';
+      contentItems.forEach(c => {
+        const v = parseInt(c.vistas) || 0;
+        const d = parseInt(c.descargas) || 0;
+        const conv = v > 0 ? ((d / v) * 100).toFixed(1) + '%' : '—';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${esc(c.nombre)}</td>
+          <td>${esc(c.plat)}</td>
+          <td>${esc(c.fecha)}</td>
+          <td class="td-num">${v ? fmtNum(v) : '—'}</td>
+          <td class="td-num">${d || '—'}</td>
+          <td class="ct-conv">${conv}</td>
+          <td class="td-note" title="${esc(c.notas)}">${esc(c.notas) || '—'}</td>
+          <td><button class="btn-del-row" onclick="deleteCT('${c.id}')" title="Eliminar">×</button></td>`;
+        tbody.appendChild(tr);
+      });
     }
 
     /* ── Shared helpers ── */
