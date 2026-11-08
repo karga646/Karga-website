@@ -20,6 +20,43 @@
       --radius: 12px;
       --blue: #0A84FF;
       --green: #34C759;
+      /* ── Platform pills (multi-select) ── */
+      .plat-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+      .plat-pill {
+        display: inline-flex; align-items: center; gap: 0.3rem;
+        padding: 0.3rem 0.75rem; border-radius: 20px;
+        border: 1.5px solid var(--border); background: var(--surface-2);
+        color: var(--muted); font-size: 0.82rem; cursor: pointer;
+        transition: all .15s; user-select: none;
+      }
+      .plat-pill:hover { border-color: var(--muted); color: var(--text); }
+      .plat-pill.selected { border-color: var(--accent); background: rgba(224,51,51,.13); color: var(--text); }
+      .plat-pill.sel-tiktok   { border-color: #69C9D0; background: rgba(105,201,208,.13); color: #69C9D0; }
+      .plat-pill.sel-instagram { border-color: #E1306C; background: rgba(225,48,108,.13); color: #E1306C; }
+      .plat-pill.sel-facebook  { border-color: #1877F2; background: rgba(24,119,242,.13); color: #1877F2; }
+      .plat-pill.sel-youtube   { border-color: #FF0000; background: rgba(255,0,0,.13);    color: #FF4444; }
+      .plat-pill.sel-otra      { border-color: #818cf8; background: rgba(129,140,248,.13); color: #818cf8; }
+
+      .clics-toggle {
+        font-size: 0.75rem; padding: 0.25rem 0.65rem; border-radius: 20px;
+        border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer;
+        transition: all .15s;
+      }
+      .clics-toggle.on { border-color: var(--blue); color: var(--blue); }
+      .clics-toggle:hover { border-color: var(--muted); color: var(--text); }
+
+      .td-edit { cursor: pointer; }
+      .td-edit:hover { background: var(--surface-2); border-radius: 4px; }
+      .td-edit input {
+        width: 70px; background: var(--surface-2); border: 1px solid var(--accent);
+        border-radius: 4px; color: var(--text); padding: 0.1rem 0.3rem;
+        font-size: 0.88rem; font-variant-numeric: tabular-nums;
+      }
+      .multi-badge {
+        display: inline-block; font-size: 0.7rem; background: rgba(224,51,51,.18);
+        color: var(--accent); border-radius: 4px; padding: 0.1rem 0.4rem; margin-left: 0.3rem; vertical-align: middle;
+      }
+
       /* ── Fuentes section ── */
       .fuentes-grid {
         display: grid;
@@ -1060,27 +1097,36 @@
       <div class="res-card">
         <div class="res-top">
           <h2>Resultados de Marketing / Ventas</h2>
-          <button class="btn-add-result" onclick="toggleResultForm()">+ Agregar</button>
+          <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+            <button class="clics-toggle" id="clics-toggle-btn" onclick="toggleClics()">Clics: off</button>
+            <button class="btn-add-result" onclick="toggleResultForm()">+ Agregar</button>
+          </div>
         </div>
 
         <div class="add-result-form" id="add-result-form" style="display:none">
           <div class="rf-row">
             <div class="rf-field"><label>Semana</label><input class="rf-input" id="f-semana" placeholder="Sem 1"></div>
-            <div class="rf-field"><label>Acción realizada</label><input class="rf-input" id="f-accion" placeholder="Post en grupos FB"></div>
-            <div class="rf-field"><label>Plataforma</label>
-              <select class="rf-select" id="f-plat">
-                <option>TikTok</option><option>Instagram</option>
-                <option>Facebook</option><option>YouTube</option><option>Otra</option>
-              </select>
-            </div>
+            <div class="rf-field"><label>Acción realizada</label><input class="rf-input" id="f-accion" placeholder="Publicar video en TikTok / Reels"></div>
             <div class="rf-field"><label>Fecha</label><input class="rf-input" id="f-fecha" type="date"></div>
+            <div class="rf-field"><label>Fuente / Contenido</label><input class="rf-input" id="f-fuente" placeholder="Reel #3, Gym tutorial…"></div>
+          </div>
+          <div class="rf-row" style="margin-bottom:.4rem;">
+            <div class="rf-field" style="flex:unset;width:100%;">
+              <label>Plataforma <span style="color:var(--muted);font-size:.75rem;">(selecciona una o varias)</span></label>
+              <div class="plat-pills" id="f-plat-pills">
+                <span class="plat-pill" data-plat="TikTok"     onclick="togglePill(this)">TikTok</span>
+                <span class="plat-pill" data-plat="Instagram"  onclick="togglePill(this)">Instagram</span>
+                <span class="plat-pill" data-plat="Facebook"   onclick="togglePill(this)">Facebook</span>
+                <span class="plat-pill" data-plat="YouTube"    onclick="togglePill(this)">YouTube</span>
+                <span class="plat-pill" data-plat="Otra"       onclick="togglePill(this)">Otra</span>
+              </div>
+            </div>
           </div>
           <div class="rf-row-2">
             <div class="rf-field"><label>Vistas</label><input class="rf-input" id="f-vistas" type="number" placeholder="0" min="0"></div>
-            <div class="rf-field"><label>Clics</label><input class="rf-input" id="f-clics" type="number" placeholder="0" min="0"></div>
+            <div class="rf-field clics-field" id="f-clics-wrap" style="display:none"><label>Clics</label><input class="rf-input" id="f-clics" type="number" placeholder="0" min="0"></div>
             <div class="rf-field"><label>Descargas</label><input class="rf-input" id="f-descargas" type="number" placeholder="0" min="0"></div>
             <div class="rf-field"><label>Notas</label><input class="rf-input" id="f-notas" placeholder="Qué funcionó, qué no…"></div>
-            <div class="rf-field"><label>Fuente / Contenido</label><input class="rf-input" id="f-fuente" placeholder="Reel #3, Post grupo FB…"></div>
           </div>
           <div class="rf-actions">
             <button class="btn-rf-cancel" onclick="toggleResultForm()">Cancelar</button>
@@ -1093,7 +1139,7 @@
             <thead>
               <tr>
                 <th>Semana</th><th>Fecha</th><th>Acción</th><th>Plataforma</th>
-                <th>Fuente</th><th>Vistas</th><th>Clics</th><th>Descargas</th><th>Notas</th><th></th>
+                <th>Fuente</th><th>Vistas</th><th id="th-clics" style="display:none">Clics</th><th>Descargas</th><th>Notas</th><th></th>
               </tr>
             </thead>
             <tbody id="res-tbody"></tbody>
@@ -1303,6 +1349,7 @@
       loadPlan();
       loadContentItems();
       renderCTTable();
+      initClicsState();
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -1656,20 +1703,77 @@
       empty.style.display = 'none';
       results.forEach(r => {
         const tr = document.createElement('tr');
+        const multiTag = r.multi ? '<span class="multi-badge">multi</span>' : '';
         tr.innerHTML = `
           <td class="td-sem">${esc(r.semana)}</td>
           <td>${esc(r.fecha)}</td>
-          <td>${esc(r.accion)}</td>
+          <td>${esc(r.accion)}${multiTag}</td>
           <td>${esc(r.plat)}</td>
           <td class="td-note" title="${esc(r.fuente)}">${esc(r.fuente) || '—'}</td>
-          <td class="td-num">${r.vistas || '—'}</td>
-          <td class="td-num">${r.clics || '—'}</td>
-          <td class="td-num">${r.descargas || '—'}</td>
+          <td class="td-num td-edit" data-id="${r.id}" data-field="vistas" title="Clic para editar">${r.vistas || '—'}</td>
+          <td class="td-num td-clics" style="display:${showClics ? '' : 'none'}">${r.clics || '—'}</td>
+          <td class="td-num td-edit" data-id="${r.id}" data-field="descargas" title="Clic para editar">${r.descargas || '—'}</td>
           <td class="td-note" title="${esc(r.notas)}">${esc(r.notas) || '—'}</td>
           <td><button class="btn-del-row" onclick="deleteResult('${r.id}')" title="Eliminar">×</button></td>`;
         tbody.appendChild(tr);
       });
       updateStats();
+
+      /* Inline edit for vistas / descargas */
+      tbody.querySelectorAll('.td-edit').forEach(td => {
+        td.addEventListener('click', function() {
+          if (this.querySelector('input')) return;
+          const id = this.dataset.id; const field = this.dataset.field;
+          const r = results.find(x => x.id === id); if (!r) return;
+          const inp = document.createElement('input');
+          inp.type = 'number'; inp.min = '0'; inp.value = r[field] || '';
+          this.textContent = ''; this.appendChild(inp); inp.focus(); inp.select();
+          const commit = () => { r[field] = inp.value.trim(); savePlan(); renderResults(); };
+          inp.addEventListener('blur', commit);
+          inp.addEventListener('keydown', e => {
+            if (e.key === 'Enter') commit();
+            if (e.key === 'Escape') renderResults();
+          });
+        });
+      });
+    }
+
+    /* ── Clics toggle ── */
+    let showClics = false;
+    function initClicsState() {
+      try { showClics = localStorage.getItem('karga_showClics') === '1'; } catch(e) {}
+      applyClicsState();
+    }
+    function applyClicsState() {
+      const btn = document.getElementById('clics-toggle-btn');
+      btn.textContent = 'Clics: ' + (showClics ? 'on' : 'off');
+      btn.classList.toggle('on', showClics);
+      document.getElementById('th-clics').style.display = showClics ? '' : 'none';
+      const wrap = document.getElementById('f-clics-wrap');
+      if (wrap) wrap.style.display = showClics ? '' : 'none';
+      document.querySelectorAll('.td-clics').forEach(td => td.style.display = showClics ? '' : 'none');
+    }
+    function toggleClics() {
+      showClics = !showClics;
+      try { localStorage.setItem('karga_showClics', showClics ? '1' : '0'); } catch(e) {}
+      applyClicsState();
+    }
+
+    /* ── Platform pills ── */
+    function togglePill(el) {
+      const plat = el.dataset.plat;
+      const cls = 'sel-' + plat.toLowerCase();
+      el.classList.toggle('selected');
+      el.classList.toggle(cls, el.classList.contains('selected'));
+    }
+    function getSelectedPlats() {
+      return [...document.querySelectorAll('#f-plat-pills .plat-pill.selected')]
+        .map(el => el.dataset.plat);
+    }
+    function clearPills() {
+      document.querySelectorAll('#f-plat-pills .plat-pill').forEach(el => {
+        el.className = 'plat-pill';
+      });
     }
 
     function toggleResultForm() {
@@ -1689,21 +1793,29 @@
         document.getElementById(semana ? 'f-accion' : 'f-semana').focus();
         return;
       }
-      results.unshift({
-        id:        'r' + Date.now(),
+      let plats = getSelectedPlats();
+      if (!plats.length) plats = ['Otra'];
+
+      const base = {
         semana,
         fecha:     document.getElementById('f-fecha').value,
         accion,
-        plat:      document.getElementById('f-plat').value,
         fuente:    document.getElementById('f-fuente').value.trim(),
         vistas:    document.getElementById('f-vistas').value,
         clics:     document.getElementById('f-clics').value,
         descargas: document.getElementById('f-descargas').value,
         notas:     document.getElementById('f-notas').value.trim(),
+        multi:     plats.length > 1,
+      };
+
+      plats.forEach((plat, i) => {
+        results.unshift({ ...base, id: 'r' + (Date.now() + i), plat });
       });
+
       ['f-semana','f-accion','f-vistas','f-clics','f-descargas','f-notas','f-fuente'].forEach(id => {
         document.getElementById(id).value = '';
       });
+      clearPills();
       document.getElementById('add-result-form').style.display = 'none';
       savePlan(); renderResults();
     }
