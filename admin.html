@@ -1971,14 +1971,23 @@
           if (j.firstRepRaw) {
             html += '<details style="margin-bottom:.5rem"><summary style="font-size:.75rem;cursor:pointer;color:#8af">Raw del primer reporte (click para ver)</summary><pre style="font-size:.65rem;overflow:auto;max-height:200px;background:#111;padding:.4rem;border-radius:4px">' + JSON.stringify(j.firstRepRaw, null, 2) + '</pre></details>';
           }
+          if (j.firstInstanceRaw) {
+            html += '<details style="margin-bottom:.5rem"><summary style="font-size:.75rem;cursor:pointer;color:#8af">Raw de la primera instancia (click)</summary><pre style="font-size:.65rem;overflow:auto;max-height:200px;background:#111;padding:.4rem;border-radius:4px">' + JSON.stringify(j.firstInstanceRaw, null, 2) + '</pre></details>';
+          }
           j.wantedResults.forEach(rep => {
-            const ok = rep.sgCount > 0;
+            const ok = (rep.insCount ?? rep.sgCount ?? 0) > 0;
             const bg = ok ? 'background:rgba(80,200,80,.1);border-left:3px solid #4c4' : 'background:rgba(200,80,80,.1);border-left:3px solid #c44';
             html += '<div style="margin-bottom:.5rem;padding:.4rem .6rem;border-radius:6px;font-size:.8rem;' + bg + '">';
             html += '<strong>' + rep.name + '</strong>';
-            html += ' <span style="opacity:.7">cat=' + (rep.category||'?') + ' freq=' + (rep.frequency||'?') + '</span>';
-            html += '<br>HTTP ' + rep.sgStatus + ' — segs: ' + rep.sgCount + ' — via: ' + (rep.sgPath||'?');
-            if (rep.firstSegUrl) html += '<br><code style="font-size:.65rem;color:#6cf;word-break:break-all">URL: ' + rep.firstSegUrl.slice(0,100) + '</code>';
+            html += ' <span style="opacity:.7">cat=' + (rep.category||'?') + '</span>';
+            if (rep.insStatus != null) {
+              html += '<br>HTTP ' + rep.insStatus + ' — instances: ' + (rep.insCount ?? 0);
+              if (rep.firstInsDate) html += ' — fecha: ' + rep.firstInsDate;
+              if (rep.insErr) html += '<br><code style="font-size:.65rem;color:#fa0;word-break:break-all">' + rep.insErr + '</code>';
+              if (rep.firstInsAttrs) html += '<br><code style="font-size:.65rem;color:#aaa">attrs: ' + JSON.stringify(rep.firstInsAttrs).slice(0,120) + '</code>';
+            } else {
+              html += '<br>HTTP ' + (rep.sgStatus||'?') + ' — segs: ' + (rep.sgCount ?? 0) + ' — via: ' + (rep.sgPath||'?');
+            }
             html += '</div>';
           });
         } else {
