@@ -1939,6 +1939,15 @@
     }
 
     // Show cached data on tab enter — no API call
+    // Pre-seed snapshot ID in localStorage (created 2026-11-09)
+    (function() {
+      try {
+        if (!localStorage.getItem('karga_asc_snap_id')) {
+          localStorage.setItem('karga_asc_snap_id', '7c164ae1-ae80-4e6c-a176-428ca3014795');
+        }
+      } catch {}
+    })();
+
     async function debugTSV() {
       const el = document.getElementById('asc-data');
       let reqId = null;
@@ -2018,7 +2027,15 @@
           if (ins.errors) html += '<br><code style="font-size:.65rem;color:#fa0">' + JSON.stringify(ins.errors).slice(0,200) + '</code>';
           html += '</div>';
           // Snapshot button
-          html += '<button onclick="testSnapshot()" style="margin-top:.3rem;padding:.3rem .8rem;background:#1a2a1a;border:1px solid #4c4;color:#8f8;border-radius:6px;cursor:pointer;font-size:.78rem">📸 Probar ONE_TIME_SNAPSHOT</button>';
+          // Check if we already have a snap_id
+          let snapId = null;
+          try { snapId = localStorage.getItem('karga_asc_snap_id'); } catch {}
+          if (snapId) {
+            html += '<p style="font-size:.78rem;color:#8f8;margin-top:.4rem">📸 Snapshot guardado: <code>' + snapId.slice(0,16) + '…</code></p>';
+            html += '<button onclick="checkSnapshot()" style="margin-top:.3rem;padding:.3rem .8rem;background:#1a2a1a;border:1px solid #4c4;color:#8f8;border-radius:6px;cursor:pointer;font-size:.78rem">🔄 Verificar snapshot (¿listo?)</button>';
+          } else {
+            html += '<button onclick="testSnapshot()" style="margin-top:.3rem;padding:.3rem .8rem;background:#1a2a1a;border:1px solid #4c4;color:#8f8;border-radius:6px;cursor:pointer;font-size:.78rem">📸 Crear ONE_TIME_SNAPSHOT</button>';
+          }
           html += '<div id="snapshot-result" style="margin-top:.4rem;font-size:.75rem;color:#aaa"></div>';
         } else {
           (j.wantedReports ?? j.reports ?? []).forEach(rep => {
@@ -2039,9 +2056,56 @@
       try {
         const r = await fetch(ASC_FN + '?action=analytics-snapshot');
         const j = await r.json();
-        el.innerHTML = '<pre style="font-size:.65rem;overflow:auto;max-height:200px;background:#111;padding:.4rem;border-radius:4px">' + JSON.stringify(j, null, 2) + '</pre>';
+        if (j.httpStatus === 201 && j.result?.data?.id) {
+          const snapId = j.result.data.id;
+          try { localStorage.setItem('karga_asc_snap_id', snapId); } catch {}
+          el.innerHTML = '✅ Snapshot creado: <code>' + snapId + '</code><br><span style="color:#fa0">Espera ~15-30 min y luego haz clic en 🔄 Verificar snapshot</span>';
+          // Re-render with check button
+          setTimeout(() => debugTSV(), 500);
+        } else {
+          el.innerHTML = '<pre style="font-size:.65rem;overflow:auto;max-height:200px;background:#111;padding:.4rem;border-radius:4px">' + JSON.stringify(j, null, 2) + '</pre>';
+        }
       } catch(e) {
         el.textContent = 'Error: ' + e.message;
+      }
+    }
+
+    async function checkSnapshot() {
+      const el = document.getElementById('snapshot-result');
+      if (!el) return;
+      let snapId = null;
+      try { snapId = localStorage.getItem('karga_asc_snap_id'); } catch {}
+      if (!snapId) { el.textContent = 'No hay snap_id guardado.'; return; }
+      el.textContent = '⏳ Verificando snapshot con Apple…';
+      try {
+        const r = await fetch(ASC_FN + '?action=debug-tsv&req_id=' + encodeURIComponent(snapId));
+        const j = await r.json();
+        const insTotal = j.instancesNoFilter?.total ?? 0;
+        if (insTotal > 0) {
+          el.innerHTML = '✅ <strong style="color:#4c4">¡Snapshot listo! ' + insTotal + ' instancias disponibles.</strong><br><button onclick="loadASCFromSnap()" style="margin-top:.4rem;padding:.3rem .8rem;background:#1a4a1a;border:1px solid #4c4;color:#8f8;border-radius:6px;cursor:pointer;font-size:.78rem">📊 Cargar datos del snapshot</button>';
+        } else {
+          el.innerHTML = '⏳ Snapshot aún no tiene datos (instances: 0). Vuelve a intentar en unos minutos.<br><code style="font-size:.65rem;color:#aaa">' + JSON.stringify(j, null, 2).slice(0, 300) + '</code>';
+        }
+      } catch(e) {
+        el.textContent = 'Error: ' + e.message;
+      }
+    }
+
+    async function loadASCFromSnap() {
+      const el = document.getElementById('asc-data');
+      let snapId = null;
+      try { snapId = localStorage.getItem('karga_asc_snap_id'); } catch {}
+      if (!snapId) return;
+      el.innerHTML = ascKpiShell('<p class="asc-status">⏳ Cargando datos del snapshot…</p>');
+      try {
+        const r = await fetch(ASC_FN + '?action=analytics-data&req_id=' + encodeURIComponent(snapId));
+        const j = await r.json();
+        if (j.status === 'ok') {
+          try { localStorage.setItem('karga_asc_cache', JSON.stringify(j)); } catch {}
+        }
+        el.innerHTML = ascRenderData(j);
+      } catch(e) {
+        el.innerHTML = ascKpiShell('<p class="asc-err">Error: ' + e.message + '</p>');
       }
     }
 
