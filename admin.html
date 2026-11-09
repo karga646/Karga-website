@@ -1944,28 +1944,35 @@
       let reqId = null;
       try { reqId = localStorage.getItem('karga_asc_req_id'); } catch {}
       if (!reqId) { el.innerHTML = ascKpiShell('<p class="asc-err">No hay req_id en localStorage. Haz clic en ↻ Actualizar primero.</p>'); return; }
-      el.innerHTML = ascKpiShell('<p class="asc-status">⏳ Descargando headers del TSV de Apple…</p>');
+      el.innerHTML = ascKpiShell('<p class="asc-status">⏳ Cargando lista de reportes de Apple…</p>');
       try {
         const r = await fetch(ASC_FN + '?action=debug-tsv&req_id=' + encodeURIComponent(reqId));
         const j = await r.json();
         if (j.error) { el.innerHTML = ascKpiShell('<p class="asc-err">Error: ' + j.error + '</p><pre style="font-size:.7rem;overflow:auto;max-height:300px">' + JSON.stringify(j, null, 2) + '</pre>'); return; }
-        let html = '<p class="asc-status" style="margin-bottom:.5rem">req_id: <code>' + reqId.slice(0,12) + '…</code> — totalReports: ' + (j.totalReports ?? '?') + ' | wanted: ' + ((j.wantedReports||[]).length) + '</p>';
-        (j.wantedReports ?? j.reports ?? []).forEach(rep => {
-          const segInfo = ' — segs: ' + (rep.segCount ?? '?') + ' (HTTP ' + (rep.sgStatus||'?') + ')';
-          html += '<div style="margin-bottom:1rem;padding:.6rem;background:var(--surface-2);border-radius:8px"><strong>' + (rep.repName || rep.repId) + '</strong><span style="opacity:.6;font-size:.8rem">' + segInfo + '</span>' + (rep.sgRaw ? '<br><code style="font-size:.65rem;color:#fa0;word-break:break-all">' + rep.sgRaw + '</code>' : '');
-          (rep.segments ?? []).forEach((seg, si) => {
-            html += '<div style="margin-top:.4rem"><em>Segment ' + si + ':</em> ';
-            if (seg.noUrl) { html += '(sin URL)'; }
-            else {
-              html += '<br><code style="font-size:.7rem;color:#6cf">' + (seg.headers || []).join(' | ') + '</code>';
-              if (seg.sampleRows && seg.sampleRows.length) {
-                html += '<br><span style="opacity:.6;font-size:.7rem">Fila 1: ' + JSON.stringify(seg.sampleRows[0]).slice(0,200) + '</span>';
-              }
-            }
+        const isV16 = Array.isArray(j.allReports);
+        let html = '<p class="asc-status" style="margin-bottom:.5rem">req_id: <code>' + reqId.slice(0,12) + '…</code> — totalReports: ' + (j.totalReports ?? '?') + '</p>';
+        if (isV16) {
+          const keywords = ['download','install','deletion','discovery','engagement'];
+          html += '<p style="font-size:.8rem;opacity:.7;margin-bottom:.5rem">Verde = posibles reportes de descargas:</p>';
+          html += '<div style="max-height:500px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:.5rem">';
+          (j.allReports || []).forEach(rep => {
+            const nm = (rep.name || '').toLowerCase();
+            const isKey = keywords.some(k => nm.includes(k));
+            const bg = isKey ? 'background:rgba(80,200,80,.1);border-left:3px solid #4c4' : 'opacity:.7';
+            html += '<div style="padding:.25rem .4rem;font-size:.78rem;' + bg + '">';
+            html += '<strong>' + (rep.name || '(sin nombre)') + '</strong>';
+            if (rep.category) html += ' <span style="color:#aaa">cat=' + rep.category + '</span>';
+            if (rep.reportType) html += ' <span style="color:#aaa">type=' + rep.reportType + '</span>';
+            if (rep.frequency) html += ' <span style="color:#aaa">freq=' + rep.frequency + '</span>';
             html += '</div>';
           });
           html += '</div>';
-        });
+        } else {
+          (j.wantedReports ?? j.reports ?? []).forEach(rep => {
+            const segInfo = ' — segs: ' + (rep.segCount ?? '?') + ' (HTTP ' + (rep.sgStatus||'?') + ')';
+            html += '<div style="margin-bottom:1rem;padding:.6rem;background:var(--surface-2);border-radius:8px"><strong>' + (rep.repName || rep.repId) + '</strong><span style="opacity:.6;font-size:.8rem">' + segInfo + '</span>' + (rep.sgRaw ? '<br><code style="font-size:.65rem;color:#fa0;word-break:break-all">' + rep.sgRaw + '</code>' : '') + '</div>';
+          });
+        }
         el.innerHTML = html;
       } catch(e) {
         el.innerHTML = ascKpiShell('<p class="asc-err">Error: ' + e.message + '</p>');
