@@ -1990,6 +1990,38 @@
             }
             html += '</div>';
           });
+        } else if (j.instancesFullResponse !== undefined || j.reqStatus !== undefined) {
+          // v20 format: reqStatus + instancesFullResponse + instancesWithDate
+          const req = j.reqStatus ?? {};
+          const ins = j.instancesFullResponse ?? {};
+          const insD = j.instancesWithDate ?? {};
+          html += '<p style="font-size:.8rem;opacity:.7;margin-bottom:.5rem">wanted: ' + j.wantedFound + ' — primer reporte: <code>' + (j.firstRepId||'?') + '</code></p>';
+          // Request status
+          const reqAttrs = req.attributes ?? {};
+          const statusColor = req.httpStatus === 200 ? '#4c4' : '#c44';
+          html += '<div style="margin-bottom:.6rem;padding:.4rem .6rem;background:var(--surface-2);border-radius:6px;font-size:.78rem">';
+          html += '<strong style="color:' + statusColor + '">Request status HTTP ' + (req.httpStatus||'?') + '</strong>';
+          html += ' — accessType: <code>' + (reqAttrs.accessType||'?') + '</code>';
+          html += ' — stopped: <code>' + (reqAttrs.stoppedDueToInactivity ?? reqAttrs.stopped ?? '?') + '</code>';
+          if (reqAttrs.addedDate) html += ' — created: <code>' + reqAttrs.addedDate + '</code>';
+          html += '</div>';
+          // Instances (no filter)
+          const insColor = ins.dataCount > 0 ? '#4c4' : '#c44';
+          html += '<div style="margin-bottom:.6rem;padding:.4rem .6rem;background:var(--surface-2);border-radius:6px;font-size:.78rem">';
+          html += '<strong style="color:' + insColor + '">/instances HTTP ' + (ins.httpStatus||'?') + ' → ' + (ins.dataCount??0) + ' instancias</strong>';
+          if (ins.meta) html += '<br><span style="opacity:.7">meta: <code>' + JSON.stringify(ins.meta).slice(0,150) + '</code></span>';
+          if (ins.links) html += '<br><span style="opacity:.7">links: <code>' + JSON.stringify(ins.links).slice(0,150) + '</code></span>';
+          if (ins.firstItem) html += '<br><span style="opacity:.7">firstItem: <code>' + JSON.stringify(ins.firstItem).slice(0,200) + '</code></span>';
+          if (ins.errors) html += '<br><code style="font-size:.65rem;color:#fa0">' + JSON.stringify(ins.errors).slice(0,200) + '</code>';
+          html += '</div>';
+          // Instances with date filter
+          const insDColor = insD.dataCount > 0 ? '#4c4' : '#fa0';
+          html += '<div style="margin-bottom:.6rem;padding:.4rem .6rem;background:var(--surface-2);border-radius:6px;font-size:.78rem">';
+          html += '<strong style="color:' + insDColor + '">/instances con filtro de fecha HTTP ' + (insD.httpStatus||'?') + ' → ' + (insD.dataCount??0) + ' instancias</strong>';
+          html += '<br><span style="opacity:.7">filtro: <code>' + (insD.filterUsed||'?') + '</code></span>';
+          if (insD.rawPreview) html += '<br><code style="font-size:.63rem;color:#aaa;word-break:break-all">' + insD.rawPreview.replace(/</g,'&lt;') + '</code>';
+          if (insD.errors) html += '<br><code style="font-size:.65rem;color:#fa0">' + JSON.stringify(insD.errors).slice(0,200) + '</code>';
+          html += '</div>';
         } else {
           (j.wantedReports ?? j.reports ?? []).forEach(rep => {
             const segInfo = ' — segs: ' + (rep.segCount ?? '?') + ' (HTTP ' + (rep.sgStatus||'?') + ')';
