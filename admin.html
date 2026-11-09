@@ -1371,7 +1371,7 @@
         document.getElementById('section-soporte').classList.toggle('hidden', sec !== 'soporte');
         document.getElementById('section-plan').classList.toggle('hidden', sec !== 'plan');
         document.getElementById('section-fuentes').classList.toggle('hidden', sec !== 'fuentes');
-        if (sec === 'fuentes') { renderFuentesBreakdown(); loadASC(); }
+        if (sec === 'fuentes') { renderFuentesBreakdown(); showASCCached(); }
       });
     });
 
@@ -1902,11 +1902,10 @@
 
     /* ── App Store Connect live data ── */
     const ASC_FN = 'https://ugnbxdszrraxkzabbfns.supabase.co/functions/v1/appstore-analytics';
-    let ascLoaded = false;
-
+    // ── ASC helpers ──────────────────────────────────────────────────────
     function ascKpiShell(statusHtml = '') {
       return `
-        <div class="kpi-grid" id="asc-kpi-grid">
+        <div class="kpi-grid">
           <div class="kpi-tile"><span class="kpi-label">Primeras descargas</span><span class="kpi-num" id="asc-k-fd">—</span></div>
           <div class="kpi-tile"><span class="kpi-label">Descargas repetidas</span><span class="kpi-num" id="asc-k-rd">—</span></div>
           <div class="kpi-tile"><span class="kpi-label">Total descargas</span><span class="kpi-num" id="asc-k-td">—</span></div>
@@ -1917,11 +1916,53 @@
         ${statusHtml}`;
     }
 
-    async function loadASC(force = false) {
-      if (ascLoaded && !force) return;
+    function ascRenderData(j) {
+      const s = j.summary ?? {};
+      const fmtK = n => n == null ? '—' : (n >= 1000 ? (n/1000).toFixed(1) + 'k' : String(n));
+      const kpiHtml = `
+        <div class="kpi-grid">
+          <div class="kpi-tile"><span class="kpi-label">Primeras descargas</span><span class="kpi-num">${fmtK(s.firstDownloads)}</span></div>
+          <div class="kpi-tile"><span class="kpi-label">Descargas repetidas</span><span class="kpi-num">${fmtK(s.redownloads)}</span></div>
+          <div class="kpi-tile"><span class="kpi-label">Total descargas</span><span class="kpi-num">${fmtK((s.firstDownloads||0)+(s.redownloads||0))}</span></div>
+          <div class="kpi-tile"><span class="kpi-label">Impresiones</span><span class="kpi-num">${fmtK(s.impressions)}</span></div>
+          <div class="kpi-tile"><span class="kpi-label">Vistas de página</span><span class="kpi-num">${fmtK(s.pageViews)}</span></div>
+          <div class="kpi-tile"><span class="kpi-label">Tasa de conversión</span><span class="kpi-num">${s.conversionRate != null ? s.conversionRate+'%' : '—'}</span></div>
+        </div>`;
+      const chartHtml = ascChartHtml(j.byDate ?? []);
+      const srcHtml   = ascSourcesHtml(j.bySource ?? []);
+      const cached    = j._cachedAt
+        ? new Date(j._cachedAt).toLocaleString('es-MX',{dateStyle:'medium',timeStyle:'short'})
+        : '';
+      return kpiHtml + chartHtml + srcHtml
+        + (cached ? `<p class="asc-status" style="margin-top:.8rem">Última actualización: ${cached}</p>` : '');
+    }
+
+    // Show cached data on tab enter — no API call
+    function showASCCached() {
+      const el = document.getElementById('asc-data');
+      let cached = null;
+      try {
+        const raw = localStorage.getItem('karga_asc_cache');
+        if (raw) cached = JSON.parse(raw);
+      } catch {}
+      if (cached) {
+        el.innerHTML = ascRenderData(cached);
+      } else {
+        // No cache yet — show shell with hint
+        let reqId = null;
+        try { reqId = localStorage.getItem('karga_asc_req_id'); } catch {}
+        const msg = reqId
+          ? '<p class="asc-status">Sin datos aún. Dale clic a <strong>↻ Actualizar</strong> para cargar.</p>'
+          : '<p class="asc-status">Dale clic a <strong>↻ Actualizar</strong> para conectar con Apple.</p>';
+        el.innerHTML = ascKpiShell(msg);
+      }
+    }
+
+    // Full refresh — only called by the button
+    async function loadASC() {
       const el = document.getElementById('asc-data');
 
-      // Get or create the report request ID
+      // Ensure we have a request ID
       let reqId = null;
       try { reqId = localStorage.getItem('karga_asc_req_id'); } catch {}
 
@@ -1933,9 +1974,7 @@
           if (ij.requestId) {
             try { localStorage.setItem('karga_asc_req_id', ij.requestId); } catch {}
             reqId = ij.requestId;
-            el.innerHTML = ascKpiShell(`<p class="asc-status">✓ Solicitud ${ij.recovered ? 'recuperada' : 'enviada'} (ID: ${ij.requestId.slice(0,8)}…). Los datos estarán listos en ~10-15 min — dale clic a <strong>↻ Actualizar</strong>.</p>`);
-          } else if (ij.status === 'conflict') {
-            el.innerHTML = ascKpiShell(`<p class="asc-status">⏳ ${ij.message}</p>`);
+            el.innerHTML = ascKpiShell(`<p class="asc-status">✓ Solicitud enviada (ID: ${ij.requestId.slice(0,8)}…). Apple tarda ~10-15 min — vuelve a dar clic a <strong>↻ Actualizar</strong>.</p>`);
           } else {
             el.innerHTML = ascKpiShell(`<p class="asc-err">Error al crear solicitud: ${ij.message || JSON.stringify(ij.detail || ij)}</p>`);
           }
@@ -1945,8 +1984,8 @@
         return;
       }
 
-      // Fetch analytics data
-      el.innerHTML = ascKpiShell('<p class="asc-status">⏳ Cargando datos…</p>');
+      // Fetch fresh data from Apple
+      el.innerHTML = ascKpiShell('<p class="asc-status">⏳ Descargando datos de Apple…</p>');
       try {
         const r = await fetch(ASC_FN + '?action=analytics-data&req_id=' + encodeURIComponent(reqId));
         const j = await r.json();
@@ -1957,7 +1996,7 @@
         }
         if (j.status === 'no_request') {
           try { localStorage.removeItem('karga_asc_req_id'); } catch {}
-          el.innerHTML = ascKpiShell(`<p class="asc-status">Sin solicitud activa. Dale clic a <strong>↻ Actualizar</strong> para crear una.</p>`);
+          el.innerHTML = ascKpiShell(`<p class="asc-status">Solicitud caducada. Dale clic de nuevo a <strong>↻ Actualizar</strong>.</p>`);
           return;
         }
         if (j.status === 'error' || j.error) {
@@ -1965,25 +2004,11 @@
           return;
         }
 
-        const s = j.summary ?? {};
-        const fmtK = n => n == null ? '—' : (n >= 1000 ? (n/1000).toFixed(1) + 'k' : String(n));
-        const kpiHtml = `
-          <div class="kpi-grid">
-            <div class="kpi-tile"><span class="kpi-label">Primeras descargas</span><span class="kpi-num">${fmtK(s.firstDownloads)}</span></div>
-            <div class="kpi-tile"><span class="kpi-label">Descargas repetidas</span><span class="kpi-num">${fmtK(s.redownloads)}</span></div>
-            <div class="kpi-tile"><span class="kpi-label">Total descargas</span><span class="kpi-num">${fmtK((s.firstDownloads||0)+(s.redownloads||0))}</span></div>
-            <div class="kpi-tile"><span class="kpi-label">Impresiones</span><span class="kpi-num">${fmtK(s.impressions)}</span></div>
-            <div class="kpi-tile"><span class="kpi-label">Vistas de página</span><span class="kpi-num">${fmtK(s.pageViews)}</span></div>
-            <div class="kpi-tile"><span class="kpi-label">Tasa de conversión</span><span class="kpi-num">${s.conversionRate != null ? s.conversionRate+'%' : '—'}</span></div>
-          </div>`;
-        const chartHtml = ascChartHtml(j.byDate ?? []);
-        const srcHtml   = ascSourcesHtml(j.bySource ?? []);
-        const updated   = j.meta?.lastUpdated
-          ? new Date(j.meta.lastUpdated).toLocaleString('es-MX',{dateStyle:'medium',timeStyle:'short'})
-          : '';
-        el.innerHTML = kpiHtml + chartHtml + srcHtml
-          + (updated ? `<p class="asc-status" style="margin-top:.8rem">Actualizado: ${updated}</p>` : '');
-        ascLoaded = true;
+        // Save to cache with timestamp
+        j._cachedAt = new Date().toISOString();
+        try { localStorage.setItem('karga_asc_cache', JSON.stringify(j)); } catch {}
+
+        el.innerHTML = ascRenderData(j);
       } catch(e) {
         el.innerHTML = ascKpiShell(`<p class="asc-err">No se pudo conectar: ${e.message}</p>`);
       }
