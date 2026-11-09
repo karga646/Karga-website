@@ -1178,23 +1178,36 @@
       <div class="content-tracker">
         <div class="ct-top">
           <h2>Rastreo de Contenido</h2>
-          <button class="btn-add-ct" onclick="toggleCTForm()">+ Registrar contenido</button>
+          <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+            <button class="clics-toggle" id="ct-clics-toggle-btn" onclick="toggleCTClics()">Clics: off</button>
+            <button class="btn-add-ct" onclick="toggleCTForm()">+ Registrar contenido</button>
+          </div>
         </div>
 
         <div class="ct-form" id="ct-form">
           <div class="ct-row">
-            <div class="ct-field"><label>Contenido</label><input class="ct-input" id="ct-nombre" placeholder="Reel gym tutorial #3"></div>
-            <div class="ct-field"><label>Plataforma</label>
-              <select class="ct-select" id="ct-plat">
-                <option>TikTok</option><option>Instagram</option><option>YouTube</option><option>Facebook</option><option>Otra</option>
-              </select>
-            </div>
+            <div class="ct-field"><label>Semana</label><input class="ct-input" id="ct-semana" placeholder="Sem 1"></div>
+            <div class="ct-field"><label>Acción realizada</label><input class="ct-input" id="ct-accion" placeholder="Publicar video en TikTok / Reels"></div>
             <div class="ct-field"><label>Fecha</label><input class="ct-input" id="ct-fecha" type="date"></div>
+            <div class="ct-field"><label>Fuente / Contenido</label><input class="ct-input" id="ct-nombre" placeholder="Reel #3, Gym tutorial…"></div>
+          </div>
+          <div class="ct-row" style="margin-bottom:.4rem;">
+            <div class="ct-field" style="flex:unset;width:100%;">
+              <label>Plataforma <span style="color:var(--muted);font-size:.75rem;">(selecciona una o varias)</span></label>
+              <div class="plat-pills" id="ct-plat-pills">
+                <span class="plat-pill" data-plat="TikTok"    onclick="toggleCTPill(this)">TikTok</span>
+                <span class="plat-pill" data-plat="Instagram" onclick="toggleCTPill(this)">Instagram</span>
+                <span class="plat-pill" data-plat="Facebook"  onclick="toggleCTPill(this)">Facebook</span>
+                <span class="plat-pill" data-plat="YouTube"   onclick="toggleCTPill(this)">YouTube</span>
+                <span class="plat-pill" data-plat="Otra"      onclick="toggleCTPill(this)">Otra</span>
+              </div>
+            </div>
           </div>
           <div class="ct-row">
             <div class="ct-field"><label>Vistas</label><input class="ct-input" id="ct-vistas" type="number" placeholder="0" min="0"></div>
-            <div class="ct-field"><label>Descargas atribuidas</label><input class="ct-input" id="ct-descargas" type="number" placeholder="0" min="0"></div>
-            <div class="ct-field"><label>Notas</label><input class="ct-input" id="ct-notas" placeholder="Qué funcionó…"></div>
+            <div class="ct-field" id="ct-clics-wrap" style="display:none"><label>Clics</label><input class="ct-input" id="ct-clics" type="number" placeholder="0" min="0"></div>
+            <div class="ct-field"><label>Descargas</label><input class="ct-input" id="ct-descargas" type="number" placeholder="0" min="0"></div>
+            <div class="ct-field"><label>Notas</label><input class="ct-input" id="ct-notas" placeholder="Qué funcionó, qué no…"></div>
           </div>
           <div class="ct-actions">
             <button class="btn-ct-cancel" onclick="toggleCTForm()">Cancelar</button>
@@ -1206,8 +1219,8 @@
           <table class="ct-table">
             <thead>
               <tr>
-                <th>Contenido</th><th>Plataforma</th><th>Fecha</th>
-                <th>Vistas</th><th>Descargas</th><th>Conversión</th><th>Notas</th><th></th>
+                <th>Semana</th><th>Fecha</th><th>Acción</th><th>Plataforma</th>
+                <th>Fuente</th><th>Vistas</th><th id="ct-th-clics" style="display:none">Clics</th><th>Descargas</th><th>Notas</th><th></th>
               </tr>
             </thead>
             <tbody id="ct-tbody"></tbody>
@@ -1342,6 +1355,7 @@
       loadTickets();
       loadPlan();
       loadContentItems();
+      try { ctShowClics = localStorage.getItem('karga_ctShowClics') === '1'; } catch(e) {}
       renderCTTable();
       initClicsState();
     }
@@ -2008,25 +2022,61 @@
       f.style.display = show ? 'block' : 'none';
       if (show) {
         document.getElementById('ct-fecha').value = new Date().toISOString().slice(0,10);
-        document.getElementById('ct-nombre').focus();
+        document.getElementById('ct-semana').focus();
       }
     }
 
+    let ctShowClics = false;
+    function applyCTClicsState() {
+      const btn = document.getElementById('ct-clics-toggle-btn');
+      if (btn) { btn.textContent = 'Clics: ' + (ctShowClics ? 'on' : 'off'); btn.classList.toggle('on', ctShowClics); }
+      const thClics = document.getElementById('ct-th-clics');
+      if (thClics) thClics.style.display = ctShowClics ? '' : 'none';
+      const wrap = document.getElementById('ct-clics-wrap');
+      if (wrap) wrap.style.display = ctShowClics ? '' : 'none';
+      document.querySelectorAll('.ct-td-clics').forEach(td => td.style.display = ctShowClics ? '' : 'none');
+    }
+    function toggleCTClics() {
+      ctShowClics = !ctShowClics;
+      try { localStorage.setItem('karga_ctShowClics', ctShowClics ? '1' : '0'); } catch(e) {}
+      applyCTClicsState();
+    }
+
+    function toggleCTPill(el) {
+      const plat = el.dataset.plat;
+      const cls = 'sel-' + plat.toLowerCase();
+      el.classList.toggle('selected');
+      el.classList.toggle(cls, el.classList.contains('selected'));
+    }
+    function getCTSelectedPlats() {
+      return [...document.querySelectorAll('#ct-plat-pills .plat-pill.selected')].map(el => el.dataset.plat);
+    }
+    function clearCTPills() {
+      document.querySelectorAll('#ct-plat-pills .plat-pill').forEach(el => { el.className = 'plat-pill'; });
+    }
+
     function saveCT() {
-      const nombre = document.getElementById('ct-nombre').value.trim();
-      if (!nombre) { document.getElementById('ct-nombre').focus(); return; }
+      const semana = document.getElementById('ct-semana').value.trim();
+      const accion = document.getElementById('ct-accion').value.trim();
+      if (!semana || !accion) { document.getElementById(semana ? 'ct-accion' : 'ct-semana').focus(); return; }
+      let plats = getCTSelectedPlats();
+      if (!plats.length) plats = ['Otra'];
       contentItems.unshift({
         id:        'c' + Date.now(),
-        nombre,
-        plat:      document.getElementById('ct-plat').value,
+        semana,
+        accion,
+        nombre:    document.getElementById('ct-nombre').value.trim(),
+        plat:      plats.join(', '),
         fecha:     document.getElementById('ct-fecha').value,
         vistas:    document.getElementById('ct-vistas').value,
+        clics:     document.getElementById('ct-clics').value,
         descargas: document.getElementById('ct-descargas').value,
         notas:     document.getElementById('ct-notas').value.trim(),
       });
-      ['ct-nombre','ct-vistas','ct-descargas','ct-notas'].forEach(id => {
-        document.getElementById(id).value = '';
+      ['ct-semana','ct-accion','ct-nombre','ct-vistas','ct-clics','ct-descargas','ct-notas'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
       });
+      clearCTPills();
       document.getElementById('ct-form').style.display = 'none';
       saveContentItems();
       renderCTTable();
@@ -2049,19 +2099,21 @@
       contentItems.forEach(c => {
         const v = parseInt(c.vistas) || 0;
         const d = parseInt(c.descargas) || 0;
-        const conv = v > 0 ? ((d / v) * 100).toFixed(1) + '%' : '—';
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${esc(c.nombre)}</td>
-          <td>${esc(c.plat)}</td>
+          <td>${esc(c.semana || '')}</td>
           <td>${esc(c.fecha)}</td>
+          <td>${esc(c.accion || '')}</td>
+          <td>${esc(c.plat)}</td>
+          <td>${esc(c.nombre || '')}</td>
           <td class="td-num">${v ? fmtNum(v) : '—'}</td>
+          <td class="td-num ct-td-clics" style="display:${ctShowClics ? '' : 'none'}">${parseInt(c.clics) ? fmtNum(parseInt(c.clics)) : '—'}</td>
           <td class="td-num">${d || '—'}</td>
-          <td class="ct-conv">${conv}</td>
           <td class="td-note" title="${esc(c.notas)}">${esc(c.notas) || '—'}</td>
           <td><button class="btn-del-row" onclick="deleteCT('${c.id}')" title="Eliminar">×</button></td>`;
         tbody.appendChild(tr);
       });
+      applyCTClicsState();
     }
 
     /* ── Shared helpers ── */
