@@ -1967,17 +1967,18 @@
           });
           html += '</div>';
         } else if (Array.isArray(j.wantedResults)) {
-          // v17 format: shows segment test results for each wanted report
           html += '<p style="font-size:.8rem;opacity:.7;margin-bottom:.5rem">wanted: ' + (j.wantedFound ?? j.wantedResults.length) + ' — resultado de segmentos:</p>';
+          if (j.firstRepRaw) {
+            html += '<details style="margin-bottom:.5rem"><summary style="font-size:.75rem;cursor:pointer;color:#8af">Raw del primer reporte (click para ver)</summary><pre style="font-size:.65rem;overflow:auto;max-height:200px;background:#111;padding:.4rem;border-radius:4px">' + JSON.stringify(j.firstRepRaw, null, 2) + '</pre></details>';
+          }
           j.wantedResults.forEach(rep => {
             const ok = rep.sgCount > 0;
             const bg = ok ? 'background:rgba(80,200,80,.1);border-left:3px solid #4c4' : 'background:rgba(200,80,80,.1);border-left:3px solid #c44';
             html += '<div style="margin-bottom:.5rem;padding:.4rem .6rem;border-radius:6px;font-size:.8rem;' + bg + '">';
             html += '<strong>' + rep.name + '</strong>';
             html += ' <span style="opacity:.7">cat=' + (rep.category||'?') + ' freq=' + (rep.frequency||'?') + '</span>';
-            html += '<br>HTTP ' + rep.sgStatus + ' — segs: ' + rep.sgCount + ' — via: <code>' + (rep.sgPath||'?') + '</code>';
-            if (rep.sgErr) html += '<br><code style="font-size:.65rem;color:#fa0;word-break:break-all">' + rep.sgErr + '</code>';
-            if (rep.firstSegUrl) html += '<br><code style="font-size:.65rem;color:#6cf;word-break:break-all">URL: ' + rep.firstSegUrl.slice(0,80) + '…</code>';
+            html += '<br>HTTP ' + rep.sgStatus + ' — segs: ' + rep.sgCount + ' — via: ' + (rep.sgPath||'?');
+            if (rep.firstSegUrl) html += '<br><code style="font-size:.65rem;color:#6cf;word-break:break-all">URL: ' + rep.firstSegUrl.slice(0,100) + '</code>';
             html += '</div>';
           });
         } else {
