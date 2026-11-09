@@ -1990,41 +1990,36 @@
             }
             html += '</div>';
           });
-        } else if (j.instancesNoFilter !== undefined || j.dateFilterResults !== undefined || j.reqStatus !== undefined) {
-          // v21 format: reqStatus + instancesNoFilter + dateFilterResults
-          const req = j.reqStatus ?? {};
+        } else if (j.reqStatusFull !== undefined || j.instancesNoFilter !== undefined) {
+          // v22 format: reqStatusFull + firstRepFull + instancesNoFilter
+          const req = j.reqStatusFull ?? {};
+          const reqAttrs = req.allAttributes ?? {};
           const ins = j.instancesNoFilter ?? {};
-          const reqAttrs = req.attributes ?? {};
-          html += '<p style="font-size:.8rem;opacity:.7;margin-bottom:.5rem">wanted: ' + j.wantedFound + ' — freq: <code>' + (j.firstRepFreq||'?') + '</code> — id: <code>' + (j.firstRepId||'?').slice(0,20) + '…</code></p>';
-          // Request status
+          const repFull = j.firstRepFull ?? {};
+          html += '<p style="font-size:.8rem;opacity:.7;margin-bottom:.5rem">wanted: ' + j.wantedFound + '</p>';
+          // Full request attributes
           const statusColor = req.httpStatus === 200 ? '#4c4' : '#c44';
           html += '<div style="margin-bottom:.6rem;padding:.4rem .6rem;background:var(--surface-2);border-radius:6px;font-size:.78rem">';
-          html += '<strong style="color:' + statusColor + '">Request HTTP ' + (req.httpStatus||'?') + '</strong>';
-          html += ' — accessType: <code>' + (reqAttrs.accessType||'?') + '</code>';
-          html += ' — stopped: <code>' + (reqAttrs.stoppedDueToInactivity ?? reqAttrs.stopped ?? '?') + '</code>';
-          if (reqAttrs.addedDate) html += ' — created: <code>' + reqAttrs.addedDate + '</code>';
+          html += '<strong style="color:' + statusColor + '">Request HTTP ' + (req.httpStatus||'?') + '</strong><br>';
+          html += '<code style="font-size:.7rem;color:#aaa">' + JSON.stringify(reqAttrs).slice(0,300) + '</code>';
           html += '</div>';
-          // Instances no filter
-          const insColor = (ins.total ?? ins.dataCount) > 0 ? '#4c4' : '#c44';
-          html += '<div style="margin-bottom:.6rem;padding:.4rem .6rem;background:var(--surface-2);border-radius:6px;font-size:.78rem">';
-          html += '<strong style="color:' + insColor + '">/instances (sin filtro) HTTP ' + (ins.httpStatus||'?') + ' → total: ' + (ins.total??0) + '</strong>';
-          if (ins.meta) html += '<br><span style="opacity:.7">meta: <code>' + JSON.stringify(ins.meta).slice(0,150) + '</code></span>';
-          if (ins.errors) html += '<br><code style="font-size:.65rem;color:#fa0">' + JSON.stringify(ins.errors).slice(0,200) + '</code>';
-          html += '</div>';
-          // Date filter results
-          const drs = j.dateFilterResults ?? [];
-          if (drs.length) {
+          // First report full attributes
+          if (repFull.attributes) {
             html += '<div style="margin-bottom:.6rem;padding:.4rem .6rem;background:var(--surface-2);border-radius:6px;font-size:.78rem">';
-            html += '<strong>/instances con filter[processingDate]=FECHA</strong><br>';
-            drs.forEach(dr => {
-              const c = dr.total > 0 ? '#4c4' : (dr.httpStatus===200 ? '#fa0' : '#c44');
-              html += '<div style="margin:.2rem 0;color:' + c + '">' + dr.date + ': HTTP ' + dr.httpStatus + ' → total: ' + dr.total;
-              if (dr.errors) html += ' <span style="color:#fa0;font-size:.7rem">' + String(dr.errors).slice(0,80) + '</span>';
-              if (dr.firstItem) html += '<br><code style="font-size:.65rem;color:#aaa">' + JSON.stringify(dr.firstItem).slice(0,150) + '</code>';
-              html += '</div>';
-            });
+            html += '<strong>Primer reporte:</strong> <code>' + (repFull.id||'?').slice(0,20) + '…</code><br>';
+            html += '<code style="font-size:.7rem;color:#aaa">' + JSON.stringify(repFull.attributes).slice(0,300) + '</code>';
             html += '</div>';
           }
+          // Instances no filter
+          const insColor = (ins.total ?? 0) > 0 ? '#4c4' : '#c44';
+          html += '<div style="margin-bottom:.6rem;padding:.4rem .6rem;background:var(--surface-2);border-radius:6px;font-size:.78rem">';
+          html += '<strong style="color:' + insColor + '">/instances HTTP ' + (ins.httpStatus||'?') + ' → total: ' + (ins.total??0) + '</strong>';
+          if (ins.meta) html += '<br><code style="font-size:.7rem;color:#aaa">meta: ' + JSON.stringify(ins.meta).slice(0,150) + '</code>';
+          if (ins.errors) html += '<br><code style="font-size:.65rem;color:#fa0">' + JSON.stringify(ins.errors).slice(0,200) + '</code>';
+          html += '</div>';
+          // Snapshot button
+          html += '<button onclick="testSnapshot()" style="margin-top:.3rem;padding:.3rem .8rem;background:#1a2a1a;border:1px solid #4c4;color:#8f8;border-radius:6px;cursor:pointer;font-size:.78rem">📸 Probar ONE_TIME_SNAPSHOT</button>';
+          html += '<div id="snapshot-result" style="margin-top:.4rem;font-size:.75rem;color:#aaa"></div>';
         } else {
           (j.wantedReports ?? j.reports ?? []).forEach(rep => {
             const segInfo = ' — segs: ' + (rep.segCount ?? '?') + ' (HTTP ' + (rep.sgStatus||'?') + ')';
@@ -2034,6 +2029,19 @@
         el.innerHTML = html;
       } catch(e) {
         el.innerHTML = ascKpiShell('<p class="asc-err">Error: ' + e.message + '</p>');
+      }
+    }
+
+    async function testSnapshot() {
+      const el = document.getElementById('snapshot-result');
+      if (!el) return;
+      el.textContent = '⏳ Creando ONE_TIME_SNAPSHOT con Apple…';
+      try {
+        const r = await fetch(ASC_FN + '?action=analytics-snapshot');
+        const j = await r.json();
+        el.innerHTML = '<pre style="font-size:.65rem;overflow:auto;max-height:200px;background:#111;padding:.4rem;border-radius:4px">' + JSON.stringify(j, null, 2) + '</pre>';
+      } catch(e) {
+        el.textContent = 'Error: ' + e.message;
       }
     }
 
