@@ -1904,6 +1904,19 @@
     const ASC_FN = 'https://ugnbxdszrraxkzabbfns.supabase.co/functions/v1/appstore-analytics';
     let ascLoaded = false;
 
+    function ascKpiShell(statusHtml = '') {
+      return `
+        <div class="kpi-grid" id="asc-kpi-grid">
+          <div class="kpi-tile"><span class="kpi-label">Primeras descargas</span><span class="kpi-num" id="asc-k-fd">—</span></div>
+          <div class="kpi-tile"><span class="kpi-label">Descargas repetidas</span><span class="kpi-num" id="asc-k-rd">—</span></div>
+          <div class="kpi-tile"><span class="kpi-label">Total descargas</span><span class="kpi-num" id="asc-k-td">—</span></div>
+          <div class="kpi-tile"><span class="kpi-label">Impresiones</span><span class="kpi-num" id="asc-k-im">—</span></div>
+          <div class="kpi-tile"><span class="kpi-label">Vistas de página</span><span class="kpi-num" id="asc-k-pv">—</span></div>
+          <div class="kpi-tile"><span class="kpi-label">Tasa de conversión</span><span class="kpi-num" id="asc-k-cr">—</span></div>
+        </div>
+        ${statusHtml}`;
+    }
+
     async function loadASC(force = false) {
       if (ascLoaded && !force) return;
       const el = document.getElementById('asc-data');
@@ -1913,40 +1926,42 @@
       try { reqId = localStorage.getItem('karga_asc_req_id'); } catch {}
 
       if (!reqId) {
-        el.innerHTML = '<p class="asc-status">⏳ Enviando solicitud a Apple…</p>';
+        el.innerHTML = ascKpiShell('<p class="asc-status">⏳ Conectando con Apple…</p>');
         try {
           const ir = await fetch(ASC_FN + '?action=analytics-init');
           const ij = await ir.json();
           if (ij.requestId) {
             try { localStorage.setItem('karga_asc_req_id', ij.requestId); } catch {}
             reqId = ij.requestId;
-            el.innerHTML = `<p class="asc-status">✓ Solicitud enviada (ID: ${ij.requestId.slice(0,8)}…). Apple tarda ~10-15 min en generar los datos por primera vez. <br>Dale clic a <strong>↻ Actualizar</strong> en unos minutos.</p>`;
+            el.innerHTML = ascKpiShell(`<p class="asc-status">✓ Solicitud ${ij.recovered ? 'recuperada' : 'enviada'} (ID: ${ij.requestId.slice(0,8)}…). Los datos estarán listos en ~10-15 min — dale clic a <strong>↻ Actualizar</strong>.</p>`);
+          } else if (ij.status === 'conflict') {
+            el.innerHTML = ascKpiShell(`<p class="asc-status">⏳ ${ij.message}</p>`);
           } else {
-            el.innerHTML = `<p class="asc-err">Error al crear solicitud: ${ij.message || JSON.stringify(ij.detail || ij)}</p>`;
+            el.innerHTML = ascKpiShell(`<p class="asc-err">Error al crear solicitud: ${ij.message || JSON.stringify(ij.detail || ij)}</p>`);
           }
         } catch(e) {
-          el.innerHTML = `<p class="asc-err">No se pudo conectar: ${e.message}</p>`;
+          el.innerHTML = ascKpiShell(`<p class="asc-err">No se pudo conectar: ${e.message}</p>`);
         }
         return;
       }
 
       // Fetch analytics data
-      el.innerHTML = '<p class="asc-status">⏳ Cargando datos de App Store Connect…</p>';
+      el.innerHTML = ascKpiShell('<p class="asc-status">⏳ Cargando datos…</p>');
       try {
         const r = await fetch(ASC_FN + '?action=analytics-data&req_id=' + encodeURIComponent(reqId));
         const j = await r.json();
 
         if (j.status === 'pending') {
-          el.innerHTML = `<p class="asc-status">⏳ ${j.message}</p>`;
+          el.innerHTML = ascKpiShell(`<p class="asc-status">⏳ ${j.message}</p>`);
           return;
         }
         if (j.status === 'no_request') {
           try { localStorage.removeItem('karga_asc_req_id'); } catch {}
-          el.innerHTML = `<p class="asc-status">Sin solicitud activa. Dale clic a <strong>↻ Actualizar</strong> para crear una.</p>`;
+          el.innerHTML = ascKpiShell(`<p class="asc-status">Sin solicitud activa. Dale clic a <strong>↻ Actualizar</strong> para crear una.</p>`);
           return;
         }
         if (j.status === 'error' || j.error) {
-          el.innerHTML = `<p class="asc-err">Error: ${j.message || j.error}</p>`;
+          el.innerHTML = ascKpiShell(`<p class="asc-err">Error: ${j.message || j.error}</p>`);
           return;
         }
 
@@ -1970,7 +1985,7 @@
           + (updated ? `<p class="asc-status" style="margin-top:.8rem">Actualizado: ${updated}</p>` : '');
         ascLoaded = true;
       } catch(e) {
-        el.innerHTML = `<p class="asc-err">No se pudo conectar: ${e.message}</p>`;
+        el.innerHTML = ascKpiShell(`<p class="asc-err">No se pudo conectar: ${e.message}</p>`);
       }
     }
 
