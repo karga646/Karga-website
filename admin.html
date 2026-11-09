@@ -97,37 +97,29 @@
       .src-num { min-width: 2.5rem; text-align: right; color: var(--muted); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
       .src-empty { color: var(--muted); font-size: 0.88rem; padding: 0.5rem 0; }
 
+      /* ── ASC KPI tiles ── */
+      .kpi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.65rem; margin-bottom: 1.2rem; }
+      @media (max-width: 600px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+      .kpi-tile { background: var(--surface-2); border-radius: 10px; padding: 0.75rem 0.9rem; }
+      .kpi-label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 0.25rem; }
+      .kpi-num { font-size: 1.75rem; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+      .chart-section { margin: 1.1rem 0 0.6rem; }
+      .chart-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 0.5rem; }
+      .chart-svg-wrap { width: 100%; overflow-x: auto; }
+      .asc-src-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; font-size: 0.88rem; }
+      .asc-src-label { flex: 1; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+      .asc-src-bar-wrap { flex: 2; background: var(--surface-2); border-radius: 4px; height: 8px; overflow: hidden; }
+      .asc-src-bar { height: 100%; border-radius: 4px; background: var(--accent); transition: width .4s; }
+      .asc-src-num { min-width: 2.5rem; text-align: right; color: var(--muted); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
       .asc-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.4rem; }
-      .asc-pill {
-        background: var(--surface-2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 0.5rem 0.9rem;
-        font-size: 0.82rem;
-      }
+      .asc-pill { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.9rem; font-size: 0.82rem; }
       .asc-pill span { display: block; color: var(--muted); font-size: 0.72rem; margin-bottom: 0.1rem; }
-      .asc-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        margin-top: 0.9rem;
-        font-size: 0.82rem;
-        color: var(--blue);
-        text-decoration: none;
-      }
+      .asc-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: var(--blue); text-decoration: none; }
       .asc-link:hover { text-decoration: underline; }
       .asc-status { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
       .asc-err { color: #f87171; font-size: 0.82rem; margin-top: 0.4rem; }
-      .btn-asc-refresh {
-        margin-top: 0.9rem;
-        background: var(--surface-2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        color: var(--text);
-        font-size: 0.82rem;
-        padding: 0.4rem 0.9rem;
-        cursor: pointer;
-      }
+      .asc-footer { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: 1rem; }
+      .btn-asc-refresh { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.82rem; padding: 0.4rem 0.9rem; cursor: pointer; }
       .btn-asc-refresh:hover { background: var(--border); }
 
       .content-tracker { margin-top: 1.5rem; }
@@ -1170,14 +1162,16 @@
 
       <!-- App Store Connect card -->
       <div class="fuentes-card" style="margin-bottom:1.5rem;">
-        <h3>App Store Connect</h3>
+        <h3>App Store Connect — Analytics</h3>
         <div id="asc-data">
           <p class="asc-status">Cargando datos…</p>
         </div>
-        <button class="btn-asc-refresh" onclick="loadASC()">↻ Actualizar</button>
-        <a class="asc-link" href="https://appstoreconnect.apple.com/analytics/app/appStore/6763583051/overview" target="_blank">
-          Ver Analytics completo en App Store Connect ↗
-        </a>
+        <div class="asc-footer">
+          <button class="btn-asc-refresh" onclick="loadASC(true)">↻ Actualizar</button>
+          <a class="asc-link" href="https://appstoreconnect.apple.com/analytics/app/appStore/6763583051/overview" target="_blank">
+            Ver en App Store Connect ↗
+          </a>
+        </div>
       </div>
 
       <!-- Content tracker -->
@@ -1896,30 +1890,84 @@
     const ASC_FN = 'https://ugnbxdszrraxkzabbfns.supabase.co/functions/v1/appstore-analytics';
     let ascLoaded = false;
 
-    async function loadASC() {
-      if (ascLoaded) return;
+    async function loadASC(force = false) {
+      if (ascLoaded && !force) return;
       const el = document.getElementById('asc-data');
-      el.innerHTML = '<p class="asc-status">Conectando con App Store Connect…</p>';
+      el.innerHTML = '<p class="asc-status">⏳ Conectando con App Store Connect…</p>';
       try {
-        const r = await fetch(ASC_FN + '?action=app-info');
+        const r = await fetch(ASC_FN + '?action=analytics-data');
         const j = await r.json();
-        if (j.data) {
-          const a = j.data.attributes;
-          el.innerHTML = `
-            <div class="asc-row">
-              <div class="asc-pill"><span>App</span>${esc(a.name)}</div>
-              <div class="asc-pill"><span>Bundle ID</span>${esc(a.bundleId)}</div>
-              <div class="asc-pill"><span>Apple ID</span>6763583051</div>
-              <div class="asc-pill"><span>Locale</span>${esc(a.primaryLocale)}</div>
-            </div>
-            <p class="asc-status" style="margin-top:.6rem">✓ Conexión activa con App Store Connect API</p>`;
-          ascLoaded = true;
-        } else {
-          el.innerHTML = `<p class="asc-err">Error: ${esc(JSON.stringify(j))}</p>`;
+        if (j.status === 'pending') {
+          el.innerHTML = `<p class="asc-status">⏳ ${j.message}</p>`;
+          return;
         }
+        if (j.status === 'error' || j.error) {
+          el.innerHTML = `<p class="asc-err">Error: ${j.message || j.error}</p>`;
+          return;
+        }
+        const s = j.summary ?? {};
+        const fmtK = n => n == null ? '—' : (n >= 1000 ? (n/1000).toFixed(1) + 'k' : String(n));
+        const kpiHtml = `
+          <div class="kpi-grid">
+            <div class="kpi-tile"><span class="kpi-label">Primeras descargas</span><span class="kpi-num">${fmtK(s.firstDownloads)}</span></div>
+            <div class="kpi-tile"><span class="kpi-label">Descargas repetidas</span><span class="kpi-num">${fmtK(s.redownloads)}</span></div>
+            <div class="kpi-tile"><span class="kpi-label">Total descargas</span><span class="kpi-num">${fmtK((s.firstDownloads||0)+(s.redownloads||0))}</span></div>
+            <div class="kpi-tile"><span class="kpi-label">Impresiones</span><span class="kpi-num">${fmtK(s.impressions)}</span></div>
+            <div class="kpi-tile"><span class="kpi-label">Vistas de página</span><span class="kpi-num">${fmtK(s.pageViews)}</span></div>
+            <div class="kpi-tile"><span class="kpi-label">Tasa de conversión</span><span class="kpi-num">${s.conversionRate != null ? s.conversionRate+'%' : '—'}</span></div>
+          </div>`;
+        const chartHtml = ascChartHtml(j.byDate ?? []);
+        const srcHtml = ascSourcesHtml(j.bySource ?? []);
+        const updated = j.meta?.lastUpdated
+          ? new Date(j.meta.lastUpdated).toLocaleString('es-MX',{dateStyle:'medium',timeStyle:'short'})
+          : '';
+        el.innerHTML = kpiHtml + chartHtml + srcHtml
+          + (updated ? `<p class="asc-status" style="margin-top:.8rem">Actualizado: ${updated}</p>` : '');
+        ascLoaded = true;
       } catch(e) {
-        el.innerHTML = `<p class="asc-err">No se pudo conectar: ${esc(e.message)}</p>`;
+        el.innerHTML = `<p class="asc-err">No se pudo conectar: ${e.message}</p>`;
       }
+    }
+
+    function ascChartHtml(byDate) {
+      if (!byDate.length) return '';
+      const data = byDate.slice(-90);
+      const W = 560, H = 72, PAD = 3;
+      const vals = data.map(d => d.firstDownloads || 0);
+      const max = Math.max(...vals, 1);
+      const xs = data.map((_, i) => PAD + (i / Math.max(data.length - 1, 1)) * (W - PAD * 2));
+      const ys = vals.map(v => H - PAD - (v / max) * (H - PAD * 2));
+      const pts = xs.map((x, i) => x.toFixed(1) + ',' + ys[i].toFixed(1)).join(' ');
+      const area = xs[0].toFixed(1) + ',' + H + ' ' + pts + ' ' + xs[xs.length-1].toFixed(1) + ',' + H;
+      return `
+        <div class="chart-section">
+          <div class="chart-label">Primeras descargas — últimos ${data.length} días</div>
+          <div class="chart-svg-wrap">
+            <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;overflow:visible">
+              <defs><linearGradient id="ascGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#E03333" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#E03333" stop-opacity="0"/>
+              </linearGradient></defs>
+              <polygon fill="url(#ascGrad)" points="${area}"/>
+              <polyline fill="none" stroke="#E03333" stroke-width="1.8" points="${pts}"/>
+            </svg>
+          </div>
+        </div>`;
+    }
+
+    function ascSourcesHtml(bySrc) {
+      if (!bySrc.length) return '';
+      const max = Math.max(...bySrc.map(s => s.firstDownloads || 0), 1);
+      return `
+        <div class="chart-section">
+          <div class="chart-label">Fuentes de descarga</div>
+          ${bySrc.map(s => `
+            <div class="asc-src-row">
+              <span class="asc-src-label">${s.source}</span>
+              <div class="asc-src-bar-wrap"><div class="asc-src-bar" style="width:${Math.round(((s.firstDownloads||0)/max)*100)}%"></div></div>
+              <span class="asc-src-num">${s.firstDownloads||0}</span>
+            </div>`).join('')}
+        </div>`;
     }
 
     /* ── Content tracker ── */
