@@ -1975,7 +1975,7 @@
             html += '<div style="margin-bottom:.5rem;padding:.4rem .6rem;border-radius:6px;font-size:.8rem;' + bg + '">';
             html += '<strong>' + rep.name + '</strong>';
             html += ' <span style="opacity:.7">cat=' + (rep.category||'?') + ' freq=' + (rep.frequency||'?') + '</span>';
-            html += '<br>HTTP ' + rep.sgStatus + ' — segs: ' + rep.sgCount;
+            html += '<br>HTTP ' + rep.sgStatus + ' — segs: ' + rep.sgCount + ' — via: <code>' + (rep.sgPath||'?') + '</code>';
             if (rep.sgErr) html += '<br><code style="font-size:.65rem;color:#fa0;word-break:break-all">' + rep.sgErr + '</code>';
             if (rep.firstSegUrl) html += '<br><code style="font-size:.65rem;color:#6cf;word-break:break-all">URL: ' + rep.firstSegUrl.slice(0,80) + '…</code>';
             html += '</div>';
