@@ -1893,18 +1893,49 @@
     async function loadASC(force = false) {
       if (ascLoaded && !force) return;
       const el = document.getElementById('asc-data');
-      el.innerHTML = '<p class="asc-status">⏳ Conectando con App Store Connect…</p>';
+
+      // Get or create the report request ID
+      let reqId = null;
+      try { reqId = localStorage.getItem('karga_asc_req_id'); } catch {}
+
+      if (!reqId) {
+        el.innerHTML = '<p class="asc-status">⏳ Enviando solicitud a Apple…</p>';
+        try {
+          const ir = await fetch(ASC_FN + '?action=analytics-init');
+          const ij = await ir.json();
+          if (ij.requestId) {
+            try { localStorage.setItem('karga_asc_req_id', ij.requestId); } catch {}
+            reqId = ij.requestId;
+            el.innerHTML = `<p class="asc-status">✓ Solicitud enviada (ID: ${ij.requestId.slice(0,8)}…). Apple tarda ~10-15 min en generar los datos por primera vez. <br>Dale clic a <strong>↻ Actualizar</strong> en unos minutos.</p>`;
+          } else {
+            el.innerHTML = `<p class="asc-err">Error al crear solicitud: ${ij.message || JSON.stringify(ij.detail || ij)}</p>`;
+          }
+        } catch(e) {
+          el.innerHTML = `<p class="asc-err">No se pudo conectar: ${e.message}</p>`;
+        }
+        return;
+      }
+
+      // Fetch analytics data
+      el.innerHTML = '<p class="asc-status">⏳ Cargando datos de App Store Connect…</p>';
       try {
-        const r = await fetch(ASC_FN + '?action=analytics-data');
+        const r = await fetch(ASC_FN + '?action=analytics-data&req_id=' + encodeURIComponent(reqId));
         const j = await r.json();
+
         if (j.status === 'pending') {
           el.innerHTML = `<p class="asc-status">⏳ ${j.message}</p>`;
+          return;
+        }
+        if (j.status === 'no_request') {
+          try { localStorage.removeItem('karga_asc_req_id'); } catch {}
+          el.innerHTML = `<p class="asc-status">Sin solicitud activa. Dale clic a <strong>↻ Actualizar</strong> para crear una.</p>`;
           return;
         }
         if (j.status === 'error' || j.error) {
           el.innerHTML = `<p class="asc-err">Error: ${j.message || j.error}</p>`;
           return;
         }
+
         const s = j.summary ?? {};
         const fmtK = n => n == null ? '—' : (n >= 1000 ? (n/1000).toFixed(1) + 'k' : String(n));
         const kpiHtml = `
@@ -1917,8 +1948,8 @@
             <div class="kpi-tile"><span class="kpi-label">Tasa de conversión</span><span class="kpi-num">${s.conversionRate != null ? s.conversionRate+'%' : '—'}</span></div>
           </div>`;
         const chartHtml = ascChartHtml(j.byDate ?? []);
-        const srcHtml = ascSourcesHtml(j.bySource ?? []);
-        const updated = j.meta?.lastUpdated
+        const srcHtml   = ascSourcesHtml(j.bySource ?? []);
+        const updated   = j.meta?.lastUpdated
           ? new Date(j.meta.lastUpdated).toLocaleString('es-MX',{dateStyle:'medium',timeStyle:'short'})
           : '';
         el.innerHTML = kpiHtml + chartHtml + srcHtml
