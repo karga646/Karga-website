@@ -1951,7 +1951,7 @@
         if (j.error) { el.innerHTML = ascKpiShell('<p class="asc-err">Error: ' + j.error + '</p><pre style="font-size:.7rem;overflow:auto;max-height:300px">' + JSON.stringify(j, null, 2) + '</pre>'); return; }
         let html = '<p class="asc-status" style="margin-bottom:.5rem">req_id: <code>' + reqId.slice(0,12) + '…</code> — totalReports: ' + (j.totalReports ?? '?') + ' | wanted: ' + ((j.wantedReports||[]).length) + '</p>';
         (j.wantedReports ?? j.reports ?? []).forEach(rep => {
-          html += '<div style="margin-bottom:1rem;padding:.6rem;background:var(--surface-2);border-radius:8px"><strong>' + (rep.repName || rep.repId) + '</strong> <span style="opacity:.6">' + (rep.repType||'') + '</span>';
+          html += '<div style="margin-bottom:1rem;padding:.6rem;background:var(--surface-2);border-radius:8px"><strong>' + (rep.repName || rep.repId) + '</strong> <span style="opacity:.6"> — segs: ' + (rep.segCount ?? '?') + (rep.sgError ? ' ERR:'+rep.sgError : '') + '</span>';
           (rep.segments ?? []).forEach((seg, si) => {
             html += '<div style="margin-top:.4rem"><em>Segment ' + si + ':</em> ';
             if (seg.noUrl) { html += '(sin URL)'; }
