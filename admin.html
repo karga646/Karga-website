@@ -1168,6 +1168,7 @@
         </div>
         <div class="asc-footer">
           <button class="btn-asc-refresh" onclick="loadASC(true)">↻ Actualizar</button>
+          <button class="btn-asc-refresh" id="btn-debug-tsv" onclick="debugTSV()" style="margin-left:.5rem;background:#2a1a0a;border-color:#c84b00;color:#ff9966">🔍 Debug TSV</button>
           <a class="asc-link" href="https://appstoreconnect.apple.com/analytics/app/appStore/6763583051/overview" target="_blank">
             Ver en App Store Connect ↗
           </a>
@@ -1938,6 +1939,38 @@
     }
 
     // Show cached data on tab enter — no API call
+    async function debugTSV() {
+      const el = document.getElementById('asc-data');
+      let reqId = null;
+      try { reqId = localStorage.getItem('karga_asc_req_id'); } catch {}
+      if (!reqId) { el.innerHTML = ascKpiShell('<p class="asc-err">No hay req_id en localStorage. Haz clic en ↻ Actualizar primero.</p>'); return; }
+      el.innerHTML = ascKpiShell('<p class="asc-status">⏳ Descargando headers del TSV de Apple…</p>');
+      try {
+        const r = await fetch(ASC_FN + '?action=debug-tsv&req_id=' + encodeURIComponent(reqId));
+        const j = await r.json();
+        if (j.error) { el.innerHTML = ascKpiShell('<p class="asc-err">Error: ' + j.error + '</p><pre style="font-size:.7rem;overflow:auto;max-height:300px">' + JSON.stringify(j, null, 2) + '</pre>'); return; }
+        let html = '<p class="asc-status" style="margin-bottom:.5rem">req_id: <code>' + reqId.slice(0,12) + '…</code> — totalReports: ' + (j.totalReports ?? '?') + '</p>';
+        (j.reports ?? []).forEach(rep => {
+          html += '<div style="margin-bottom:1rem;padding:.6rem;background:var(--surface-2);border-radius:8px"><strong>' + (rep.repName || rep.repId) + '</strong> <span style="opacity:.6">' + (rep.repType||'') + '</span>';
+          (rep.segments ?? []).forEach((seg, si) => {
+            html += '<div style="margin-top:.4rem"><em>Segment ' + si + ':</em> ';
+            if (seg.noUrl) { html += '(sin URL)'; }
+            else {
+              html += '<br><code style="font-size:.7rem;color:#6cf">' + (seg.headers || []).join(' | ') + '</code>';
+              if (seg.sampleRows && seg.sampleRows.length) {
+                html += '<br><span style="opacity:.6;font-size:.7rem">Fila 1: ' + JSON.stringify(seg.sampleRows[0]).slice(0,200) + '</span>';
+              }
+            }
+            html += '</div>';
+          });
+          html += '</div>';
+        });
+        el.innerHTML = html;
+      } catch(e) {
+        el.innerHTML = ascKpiShell('<p class="asc-err">Error: ' + e.message + '</p>');
+      }
+    }
+
     function showASCCached() {
       const el = document.getElementById('asc-data');
       let cached = null;
