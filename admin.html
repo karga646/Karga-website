@@ -1892,12 +1892,14 @@
         if (!cards.length) {
           container.innerHTML = '<div class="kanban-empty">Sin tareas</div>';
         } else {
-          cards.forEach(t => container.appendChild(renderTaskCard(t)));
+          cards.forEach((t, i) => container.appendChild(renderTaskCard(t, i, cards.length)));
         }
       }
     }
 
-    function renderTaskCard(t) {
+    function renderTaskCard(t, colIdx, colLen) {
+      colIdx = colIdx || 0;
+      colLen = colLen || 1;
       const idx      = STATUSES.indexOf(t.status);
       const catLabel = { mkt: 'Marketing', dev: 'Desarrollo', otro: 'Otro' }[t.category] || t.category;
       const card     = document.createElement('div');
@@ -1912,6 +1914,8 @@
           <span class="tc-text">${esc(t.text)}</span>
         </div>
         <div class="tc-actions">
+          <button class="btn-tc" title="Subir"          onclick="moveCardInColumn('${t.id}',-1)" ${colIdx === 0 ? 'disabled' : ''}>&#8593;</button>
+          <button class="btn-tc" title="Bajar"          onclick="moveCardInColumn('${t.id}', 1)" ${colIdx === colLen - 1 ? 'disabled' : ''}>&#8595;</button>
           <button class="btn-tc" title="Mover atrás"     onclick="moveCard('${t.id}',-1)" ${idx === 0 ? 'disabled' : ''}>&#8592;</button>
           <button class="btn-tc" title="Mover adelante"  onclick="moveCard('${t.id}', 1)" ${idx === STATUSES.length - 1 ? 'disabled' : ''}>&#8594;</button>
           <button class="btn-tc btn-tc-del" title="Eliminar" onclick="deleteCard('${t.id}')">&#215;</button>
@@ -1925,6 +1929,21 @@
       const next = STATUSES.indexOf(t.status) + dir;
       if (next < 0 || next >= STATUSES.length) return;
       t.status = STATUSES[next];
+      savePlan(); renderKanban();
+    }
+
+    function moveCardInColumn(id, dir) {
+      const t = kanban.find(x => x.id === id);
+      if (!t) return;
+      /* All cards in same column, in their current order */
+      const colCards = kanban.filter(x => x.status === t.status);
+      const colIdx   = colCards.indexOf(t);
+      const newIdx   = colIdx + dir;
+      if (newIdx < 0 || newIdx >= colCards.length) return;
+      /* Swap in main kanban array */
+      const idxA = kanban.indexOf(t);
+      const idxB = kanban.indexOf(colCards[newIdx]);
+      [kanban[idxA], kanban[idxB]] = [kanban[idxB], kanban[idxA]];
       savePlan(); renderKanban();
     }
 
