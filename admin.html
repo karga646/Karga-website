@@ -844,6 +844,10 @@
     .task-card:active { cursor: grabbing; }
     .task-card.dragging { opacity: 0.4; transform: scale(0.97); }
 
+      .task-card.drag-above { border-top: 2px solid var(--accent) !important; }
+      .task-card.drag-below { border-bottom: 2px solid var(--accent) !important; }
+
+
     .tc-top {
       display: flex;
       align-items: flex-start;
@@ -1892,14 +1896,12 @@
         if (!cards.length) {
           container.innerHTML = '<div class="kanban-empty">Sin tareas</div>';
         } else {
-          cards.forEach((t, i) => container.appendChild(renderTaskCard(t, i, cards.length)));
+          cards.forEach(t => container.appendChild(renderTaskCard(t)));
         }
       }
     }
 
-    function renderTaskCard(t, colIdx, colLen) {
-      colIdx = colIdx || 0;
-      colLen = colLen || 1;
+    function renderTaskCard(t) {
       const idx      = STATUSES.indexOf(t.status);
       const catLabel = { mkt: 'Marketing', dev: 'Desarrollo', otro: 'Otro' }[t.category] || t.category;
       const card     = document.createElement('div');
@@ -1908,14 +1910,15 @@
       card.draggable  = true;
       card.addEventListener('dragstart', onDragStart);
       card.addEventListener('dragend',   onDragEnd);
+      card.addEventListener('dragover',  onCardDragOver);
+      card.addEventListener('dragleave', onCardDragLeave);
+      card.addEventListener('drop',      onCardDrop);
       card.innerHTML = `
         <div class="tc-top">
           <span class="tc-badge ${t.category}">${esc(catLabel)}</span>
           <span class="tc-text">${esc(t.text)}</span>
         </div>
         <div class="tc-actions">
-          <button class="btn-tc" title="Subir"          onclick="moveCardInColumn('${t.id}',-1)" ${colIdx === 0 ? 'disabled' : ''}>&#8593;</button>
-          <button class="btn-tc" title="Bajar"          onclick="moveCardInColumn('${t.id}', 1)" ${colIdx === colLen - 1 ? 'disabled' : ''}>&#8595;</button>
           <button class="btn-tc" title="Mover atrás"     onclick="moveCard('${t.id}',-1)" ${idx === 0 ? 'disabled' : ''}>&#8592;</button>
           <button class="btn-tc" title="Mover adelante"  onclick="moveCard('${t.id}', 1)" ${idx === STATUSES.length - 1 ? 'disabled' : ''}>&#8594;</button>
           <button class="btn-tc btn-tc-del" title="Eliminar" onclick="deleteCard('${t.id}')">&#215;</button>
@@ -1932,20 +1935,6 @@
       savePlan(); renderKanban();
     }
 
-    function moveCardInColumn(id, dir) {
-      const t = kanban.find(x => x.id === id);
-      if (!t) return;
-      /* All cards in same column, in their current order */
-      const colCards = kanban.filter(x => x.status === t.status);
-      const colIdx   = colCards.indexOf(t);
-      const newIdx   = colIdx + dir;
-      if (newIdx < 0 || newIdx >= colCards.length) return;
-      /* Swap in main kanban array */
-      const idxA = kanban.indexOf(t);
-      const idxB = kanban.indexOf(colCards[newIdx]);
-      [kanban[idxA], kanban[idxB]] = [kanban[idxB], kanban[idxA]];
-      savePlan(); renderKanban();
-    }
 
     function deleteCard(id) {
       kanban = kanban.filter(x => x.id !== id);
@@ -1988,9 +1977,14 @@
 
     function onDragEnd(e) {
       e.currentTarget.classList.remove('dragging');
+      /* Clear any leftover indicators */
+      document.querySelectorAll('.drag-above,.drag-below').forEach(el => {
+        el.classList.remove('drag-above','drag-below');
+      });
       dragId = null;
     }
 
+    /* Column container: drop onto empty space → move to that column */
     function onDragOver(e) {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
@@ -2012,6 +2006,42 @@
         t.status = status;
         savePlan(); renderKanban();
       }
+    }
+
+    /* Card-level drag: reorder within column (or move + reorder) */
+    function onCardDragOver(e) {
+      e.preventDefault();
+      e.stopPropagation(); /* don't let column handler fire */
+      const card = e.currentTarget;
+      if (!dragId || card.dataset.id === dragId) return;
+      const mid = card.getBoundingClientRect().top + card.getBoundingClientRect().height / 2;
+      card.classList.toggle('drag-above', e.clientY < mid);
+      card.classList.toggle('drag-below', e.clientY >= mid);
+    }
+
+    function onCardDragLeave(e) {
+      if (!e.currentTarget.contains(e.relatedTarget)) {
+        e.currentTarget.classList.remove('drag-above', 'drag-below');
+      }
+    }
+
+    function onCardDrop(e) {
+      e.preventDefault();
+      e.stopPropagation(); /* don't let column handler fire */
+      const target = e.currentTarget;
+      const insertBefore = target.classList.contains('drag-above');
+      target.classList.remove('drag-above', 'drag-below');
+      if (!dragId || target.dataset.id === dragId) return;
+      const draggedCard = kanban.find(x => x.id === dragId);
+      const targetCard  = kanban.find(x => x.id === target.dataset.id);
+      if (!draggedCard || !targetCard) return;
+      /* Remove dragged from array */
+      kanban.splice(kanban.indexOf(draggedCard), 1);
+      /* Re-find target after removal, insert before or after */
+      const ti = kanban.indexOf(targetCard);
+      draggedCard.status = targetCard.status; /* move column if needed */
+      kanban.splice(insertBefore ? ti : ti + 1, 0, draggedCard);
+      savePlan(); renderKanban();
     }
 
     /* ── Results ── */
