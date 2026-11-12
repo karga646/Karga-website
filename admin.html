@@ -250,6 +250,25 @@
         padding: .25rem .5rem;
       }
 
+
+      .btn-to-ct {
+        background: rgba(74,222,128,.12);
+        border: 1px solid rgba(74,222,128,.35);
+        border-radius: 6px;
+        color: #4ade80;
+        font-size: 0.72rem;
+        padding: .2rem .45rem;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .btn-to-ct:hover { background: rgba(74,222,128,.22); }
+      .btn-to-ct.done {
+        background: rgba(74,222,128,.06);
+        border-color: rgba(74,222,128,.15);
+        color: var(--muted);
+        cursor: default;
+      }
+
       .content-tracker { margin-top: 1.5rem; }
       .ct-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
       .ct-top h2 { font-size: 1rem; }
@@ -1997,10 +2016,24 @@
           <td class="td-num td-clics" style="display:${showClics ? '' : 'none'}">${r.clics || '—'}</td>
           <td class="td-num td-edit" data-id="${r.id}" data-field="descargas" title="Clic para editar">${r.descargas || '—'}</td>
           <td class="td-note" title="${esc(r.notas)}">${esc(r.notas) || '—'}</td>
-          <td><button class="btn-del-row" onclick="deleteResult('${r.id}')" title="Eliminar">×</button></td>`;
+          <td style="display:flex;gap:.3rem;align-items:center;">
+            <button class="btn-to-ct" id="btn-ct-${r.id}" onclick="copyToContentTracker('${r.id}')" title="Copiar al Rastreo de Contenido">→ CT</button>
+            <button class="btn-del-row" onclick="deleteResult('${r.id}')" title="Eliminar">×</button>
+          </td>`;
         tbody.appendChild(tr);
       });
       updateStats();
+
+      /* Mark already-copied results */
+      try {
+        const cc = localStorage.getItem('karga_content');
+        const ctItems = cc ? JSON.parse(cc) : [];
+        results.forEach(r => {
+          const already = ctItems.some(c => c.accion === r.accion && c.fecha === r.fecha);
+          const btn = document.getElementById('btn-ct-' + r.id);
+          if (btn && already) { btn.textContent = '✓ copiado'; btn.className = 'btn-to-ct done'; btn.disabled = true; }
+        });
+      } catch(e) {}
 
       /* Inline edit for vistas / descargas */
       tbody.querySelectorAll('.td-edit').forEach(td => {
@@ -2606,6 +2639,39 @@
       return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
+
+
+    function copyToContentTracker(id) {
+      const r = results.find(x => x.id === id);
+      if (!r) return;
+      let items = [];
+      try { const c = localStorage.getItem('karga_content'); items = c ? JSON.parse(c) : []; } catch(e) {}
+      /* Check duplicate */
+      if (items.some(c => c.accion === r.accion && c.fecha === r.fecha)) {
+        const btn = document.getElementById('btn-ct-' + id);
+        if (btn) { btn.textContent = '✓ ya existe'; btn.className = 'btn-to-ct done'; btn.disabled = true; }
+        return;
+      }
+      items.unshift({
+        id:        'c' + Date.now(),
+        semana:    r.semana,
+        accion:    r.accion,
+        nombre:    r.fuente || '',
+        plat:      r.plat,
+        fecha:     r.fecha,
+        vistas:    r.vistas,
+        clics:     r.clics || '',
+        descargas: r.descargas || '',
+        notas:     r.notas || '',
+      });
+      try { localStorage.setItem('karga_content', JSON.stringify(items)); } catch(e) {}
+      /* Update button */
+      const btn = document.getElementById('btn-ct-' + id);
+      if (btn) { btn.textContent = '✓ copiado'; btn.className = 'btn-to-ct done'; btn.disabled = true; }
+      /* Re-render content tracker if visible */
+      if (typeof renderCT === 'function') renderCT();
+      else if (typeof loadContentItems === 'function') { loadContentItems(); }
+    }
 
     function filterHistTable() {
       const val = document.getElementById('hist-filter-mes').value;
