@@ -122,6 +122,134 @@
       .btn-asc-refresh { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.82rem; padding: 0.4rem 0.9rem; cursor: pointer; }
       .btn-asc-refresh:hover { background: var(--border); }
 
+
+      /* ── Analytics Overview ── */
+      .ao-wrap { margin-bottom: 1.5rem; }
+      .ao-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      @media (max-width: 700px) { .ao-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+      .ao-kpi {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem 1.1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+      .ao-kpi-label {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: var(--muted);
+      }
+      .ao-kpi-num {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -1.5px;
+        line-height: 1;
+        color: var(--text);
+      }
+      .ao-kpi-sub {
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+      .ao-kpi-num.green  { color: #4ade80; }
+      .ao-recent-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: .75rem 1.1rem;
+        font-size: .82rem;
+      }
+      .ao-recent-label {
+        font-size: .7rem;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: var(--muted);
+        margin-right: .3rem;
+      }
+      .ao-recent-pill {
+        background: var(--surface-2);
+        border-radius: 6px;
+        padding: .25rem .6rem;
+        font-size: .8rem;
+        display: inline-flex;
+        gap: .3rem;
+        align-items: center;
+      }
+      .ao-recent-pill strong { color: var(--text); }
+      .ao-recent-pill span  { color: var(--muted); font-size: .72rem; }
+
+      /* ── Collapsible detail panels ── */
+      .detail-panel {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-bottom: .75rem;
+        overflow: hidden;
+        background: var(--surface);
+      }
+      .detail-panel > summary {
+        list-style: none;
+        cursor: pointer;
+        padding: .85rem 1.2rem;
+        font-size: .82rem;
+        font-weight: 600;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        user-select: none;
+      }
+      .detail-panel > summary::-webkit-details-marker { display: none; }
+      .detail-panel > summary::before {
+        content: '\203A';
+        font-size: 1rem;
+        color: var(--muted);
+        transition: transform .2s;
+        display: inline-block;
+        width: .9rem;
+      }
+      .detail-panel[open] > summary::before { transform: rotate(90deg); }
+      .detail-panel > summary .dp-badge {
+        margin-left: auto;
+        font-size: .68rem;
+        font-weight: 400;
+        color: var(--muted);
+        background: var(--surface-2);
+        border-radius: 4px;
+        padding: .15rem .45rem;
+      }
+      .detail-panel > summary:hover { background: rgba(255,255,255,.03); }
+      .detail-panel-body {
+        padding: 1rem 1.2rem 1.2rem;
+        border-top: 1px solid var(--border);
+      }
+      .hist-filter-row {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin-bottom: .9rem;
+        flex-wrap: wrap;
+      }
+      .hist-filter-row label { font-size: .72rem; color: var(--muted); }
+      .hist-filter-row select {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-size: .78rem;
+        padding: .25rem .5rem;
+      }
+
       .content-tracker { margin-top: 1.5rem; }
       .ct-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
       .ct-top h2 { font-size: 1rem; }
@@ -1147,128 +1275,179 @@
     <!-- ── Fuentes ── -->
     <div id="section-fuentes" class="section-wrap hidden" style="max-width:860px;margin:0 auto;padding:1.5rem 1rem;">
 
-      <div class="fuentes-grid">
-        <!-- Descargas por plataforma -->
-        <div class="fuentes-card">
-          <h3>Descargas por plataforma</h3>
-          <div id="src-plat-list"><p class="src-empty">Agrega resultados con descargas para ver el desglose.</p></div>
+      <!-- ── Overview KPIs ── -->
+      <div class="ao-wrap">
+        <div class="ao-kpi-grid">
+          <div class="ao-kpi">
+            <span class="ao-kpi-label">Descargas totales</span>
+            <span class="ao-kpi-num" id="ao-descargas">99</span>
+            <span class="ao-kpi-sub">mayo – nov 2026</span>
+          </div>
+          <div class="ao-kpi">
+            <span class="ao-kpi-label">Impresiones</span>
+            <span class="ao-kpi-num" id="ao-impresiones">1,143</span>
+            <span class="ao-kpi-sub">App Store</span>
+          </div>
+          <div class="ao-kpi">
+            <span class="ao-kpi-label">Conversión prom.</span>
+            <span class="ao-kpi-num green" id="ao-conversion">8.7%</span>
+            <span class="ao-kpi-sub">descargas / impresiones</span>
+          </div>
+          <div class="ao-kpi">
+            <span class="ao-kpi-label">Actualizaciones</span>
+            <span class="ao-kpi-num" id="ao-actualizaciones">250+</span>
+            <span class="ao-kpi-sub">retención activa</span>
+          </div>
         </div>
-        <!-- Descargas por contenido -->
-        <div class="fuentes-card">
-          <h3>Descargas por contenido</h3>
-          <div id="src-cont-list"><p class="src-empty">Registra contenidos en el tracker de abajo para ver el desglose.</p></div>
-        </div>
-      </div>
-
-      <!-- App Store Connect card -->
-      <div class="fuentes-card" style="margin-bottom:1.5rem;">
-        <h3>App Store Connect — Analytics</h3>
-        <div id="asc-data">
-          <p class="asc-status">Cargando datos…</p>
-        </div>
-        <div class="asc-footer">
-          <button class="btn-asc-refresh" onclick="loadASC(true)">↻ Actualizar</button>
-          <button class="btn-asc-refresh" id="btn-debug-tsv" onclick="debugTSV()" style="margin-left:.5rem;background:#2a1a0a;border-color:#c84b00;color:#ff9966">🔍 Debug TSV</button>
-          <a class="asc-link" href="https://appstoreconnect.apple.com/analytics/app/appStore/6763583051/overview" target="_blank">
-            Ver en App Store Connect ↗
-          </a>
-        </div>
-      </div>
-
-
-      <!-- Historial mensual CSV (mayo–nov 2026) -->
-      <div class="fuentes-card" style="margin-bottom:1.5rem;">
-        <h3 style="margin-bottom:1rem;">Historial mensual — App Store Connect <span style="font-weight:400;font-size:.78rem;color:var(--muted);margin-left:.5rem;">mayo–nov 2026 · CSV</span></h3>
-
-        <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:.85rem;">
-            <thead>
-              <tr style="border-bottom:1px solid var(--border);color:var(--muted);text-align:left;">
-                <th style="padding:.4rem .6rem;font-weight:600;">Mes</th>
-                <th style="padding:.4rem .6rem;font-weight:600;text-align:right;">Descargas</th>
-                <th style="padding:.4rem .6rem;font-weight:600;text-align:right;">Actualizaciones</th>
-                <th style="padding:.4rem .6rem;font-weight:600;text-align:right;">Impresiones</th>
-                <th style="padding:.4rem .6rem;font-weight:600;text-align:right;">Conversión</th>
-                <th style="padding:.4rem .6rem;font-weight:600;text-align:right;">Vistas pág.</th>
-              </tr>
-            </thead>
-            <tbody id="hist-tbody">
-              <tr data-best="true" style="background:rgba(255,255,255,.04);">
-                <td style="padding:.45rem .6rem;">May 2026</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">14</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">86</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">16.3%</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-              </tr>
-              <tr style="background:rgba(80,200,120,.07);border-left:2px solid #4c8;">
-                <td style="padding:.45rem .6rem;">Jun 2026 ⬆ mejor</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:#4c8;">47</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">268</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:#4c8;">17.5%</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-              </tr>
-              <tr>
-                <td style="padding:.45rem .6rem;">Jul 2026</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">4</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">132</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">3.0%</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-              </tr>
-              <tr style="background:rgba(255,255,255,.04);">
-                <td style="padding:.45rem .6rem;">Ago 2026</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">5</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">148</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">3.4%</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-              </tr>
-              <tr>
-                <td style="padding:.45rem .6rem;">Sep 2026</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">6</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">192</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">3.1%</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-              </tr>
-              <tr style="background:rgba(255,255,255,.04);">
-                <td style="padding:.45rem .6rem;">Oct 2026</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">18</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">235</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">7.7%</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-              </tr>
-              <tr>
-                <td style="padding:.45rem .6rem;">Nov 2026 <span style="font-size:.72rem;color:var(--muted);">(parcial)</span></td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">5</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">82</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">6.1%</td>
-                <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-              </tr>
-              <tr style="border-top:2px solid var(--border);font-weight:700;">
-                <td style="padding:.55rem .6rem;">Total</td>
-                <td style="padding:.55rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">99</td>
-                <td style="padding:.55rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">250+</td>
-                <td style="padding:.55rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">1,143</td>
-                <td style="padding:.55rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">8.7%</td>
-                <td style="padding:.55rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">—</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div style="margin-top:1rem;padding:.75rem;background:rgba(255,200,80,.06);border:1px solid rgba(255,200,80,.18);border-radius:8px;font-size:.8rem;line-height:1.6;color:var(--muted);">
-          <strong style="color:#fc8;">📊 Observaciones clave</strong><br>
-          · <strong style="color:var(--fg);">Jun 2026</strong> fue el mejor mes (47 descargas, 17.5% conversión) — coincide con cuando hacías videos personales educativos.<br>
-          · La conversión cayó a ~3% en jul–sep cuando los videos pasaron a ser hechos con IA — videos personales convierten mucho mejor.<br>
-          · <strong style="color:var(--fg);">250+ actualizaciones</strong> vs 99 descargas = muy buena retención; el problema es visibilidad (1,143 impresiones en 6 meses es muy bajo).<br>
-          · Mejora prioritaria: aumentar impresiones en App Store (ASO: palabras clave, screenshots, más reseñas).
+        <div class="ao-recent-row">
+          <span class="ao-recent-label">Oct 2026</span>
+          <span class="ao-recent-pill"><strong>18</strong><span>descargas</span></span>
+          <span class="ao-recent-pill"><strong>235</strong><span>impresiones</span></span>
+          <span class="ao-recent-pill"><strong>7.7%</strong><span>conversión</span></span>
+          <span style="margin-left:auto;font-size:.7rem;color:var(--muted);">último mes completo</span>
         </div>
       </div>
+
+      <!-- ── Historial mensual (open by default) ── -->
+      <details class="detail-panel" open>
+        <summary>Historial mensual <span class="dp-badge">mayoânov 2026 Â· CSV</span></summary>
+        <div class="detail-panel-body">
+          <div class="hist-filter-row">
+            <label for="hist-filter-mes">Filtrar mes:</label>
+            <select id="hist-filter-mes" onchange="filterHistTable()">
+              <option value="all">Todos</option>
+              <option value="may">May 2026</option>
+              <option value="jun">Jun 2026</option>
+              <option value="jul">Jul 2026</option>
+              <option value="ago">Ago 2026</option>
+              <option value="sep">Sep 2026</option>
+              <option value="oct">Oct 2026</option>
+              <option value="nov">Nov 2026</option>
+            </select>
+          </div>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:.85rem;">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border);color:var(--muted);text-align:left;">
+                  <th style="padding:.4rem .6rem;font-weight:600;">Mes</th>
+                  <th style="padding:.4rem .6rem;font-weight:600;text-align:right;">Descargas</th>
+                  <th style="padding:.4rem .6rem;font-weight:600;text-align:right;">Actualizaciones</th>
+                  <th style="padding:.4rem .6rem;font-weight:600;text-align:right;">Impresiones</th>
+                  <th style="padding:.4rem .6rem;font-weight:600;text-align:right;">ConversiÃ³n</th>
+                  <th style="padding:.4rem .6rem;font-weight:600;text-align:right;">Vistas pÃ¡g.</th>
+                </tr>
+              </thead>
+              <tbody id="hist-tbody">
+                <tr data-mes="may" style="background:rgba(255,255,255,.04);">
+                  <td style="padding:.45rem .6rem;">May 2026</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">14</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">86</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">16.3%</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                </tr>
+                <tr data-mes="jun" style="background:rgba(80,200,120,.07);border-left:2px solid #4c8;">
+                  <td style="padding:.45rem .6rem;">Jun 2026 â¬ mejor</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:#4c8;">47</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">268</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:#4c8;">17.5%</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                </tr>
+                <tr data-mes="jul">
+                  <td style="padding:.45rem .6rem;">Jul 2026</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">4</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">132</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">3.0%</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                </tr>
+                <tr data-mes="ago" style="background:rgba(255,255,255,.04);">
+                  <td style="padding:.45rem .6rem;">Ago 2026</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">5</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">148</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">3.4%</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                </tr>
+                <tr data-mes="sep">
+                  <td style="padding:.45rem .6rem;">Sep 2026</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">6</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">192</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">3.1%</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                </tr>
+                <tr data-mes="oct" style="background:rgba(255,255,255,.04);">
+                  <td style="padding:.45rem .6rem;">Oct 2026</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">18</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">235</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">7.7%</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                </tr>
+                <tr data-mes="nov">
+                  <td style="padding:.45rem .6rem;">Nov 2026 <span style="font-size:.72rem;color:var(--muted);">(parcial)</span></td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">5</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">82</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">6.1%</td>
+                  <td style="padding:.45rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                </tr>
+                <tr style="border-top:2px solid var(--border);font-weight:700;">
+                  <td style="padding:.55rem .6rem;">Total</td>
+                  <td style="padding:.55rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">99</td>
+                  <td style="padding:.55rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">250+</td>
+                  <td style="padding:.55rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">1,143</td>
+                  <td style="padding:.55rem .6rem;text-align:right;font-variant-numeric:tabular-nums;">8.7%</td>
+                  <td style="padding:.55rem .6rem;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);">â</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:1rem;padding:.75rem;background:rgba(255,200,80,.06);border:1px solid rgba(255,200,80,.18);border-radius:8px;font-size:.8rem;line-height:1.6;color:var(--muted);">
+            <strong style="color:#fc8;">ð Observaciones clave</strong><br>
+            Â· <strong style="color:var(--fg);">Jun 2026</strong> fue el mejor mes (47 descargas, 17.5% conversiÃ³n) â coincide con cuando hacÃ­as videos personales educativos.<br>
+            Â· La conversiÃ³n cayÃ³ a ~3% en julâsep cuando los videos pasaron a ser hechos con IA â videos personales convierten mucho mejor.<br>
+            Â· <strong style="color:var(--fg);">250+ actualizaciones</strong> vs 99 descargas = muy buena retenciÃ³n; el problema es visibilidad (1,143 impresiones en 6 meses es muy bajo).<br>
+            Â· Mejora prioritaria: aumentar impresiones en App Store (ASO: palabras clave, screenshots, mÃ¡s reseÃ±as).
+          </div>
+        </div>
+      </details>
+
+      <!-- ── App Store Connect datos en vivo ── -->
+      <details class="detail-panel">
+        <summary>App Store Connect â datos en vivo <span class="dp-badge">API Â· snapshot</span></summary>
+        <div class="detail-panel-body">
+          <div id="asc-data">
+            <p class="asc-status">Cargando datosâ¦</p>
+          </div>
+          <div class="asc-footer">
+            <button class="btn-asc-refresh" onclick="loadASC(true)">â» Actualizar</button>
+            <button class="btn-asc-refresh" id="btn-debug-tsv" onclick="debugTSV()" style="margin-left:.5rem;background:#2a1a0a;border-color:#c84b00;color:#ff9966">ð Debug TSV</button>
+            <a class="asc-link" href="https://appstoreconnect.apple.com/analytics/app/appStore/6763583051/overview" target="_blank">
+              Ver en App Store Connect â
+            </a>
+          </div>
+        </div>
+      </details>
+
+      <!-- ── Desglose por fuente ── -->
+      <details class="detail-panel">
+        <summary>Desglose por fuente <span class="dp-badge">plataforma Â· contenido</span></summary>
+        <div class="detail-panel-body">
+          <div class="fuentes-grid" style="margin-bottom:0;">
+            <div>
+              <h3 style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.75rem;">Descargas por plataforma</h3>
+              <div id="src-plat-list"><p class="src-empty">Agrega resultados con descargas para ver el desglose.</p></div>
+            </div>
+            <div>
+              <h3 style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.75rem;">Descargas por contenido</h3>
+              <div id="src-cont-list"><p class="src-empty">Registra contenidos en el tracker de abajo para ver el desglose.</p></div>
+            </div>
+          </div>
+        </div>
+      </details>
 
       <!-- Content tracker -->
       <div class="content-tracker">
@@ -2425,6 +2604,15 @@
     /* ── Shared helpers ── */
     function esc(s) {
       return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+
+    function filterHistTable() {
+      const val = document.getElementById('hist-filter-mes').value;
+      const rows = document.querySelectorAll('#hist-tbody tr[data-mes]');
+      rows.forEach(r => {
+        r.style.display = (val === 'all' || r.dataset.mes === val) ? '' : 'none';
+      });
     }
 
     init();
