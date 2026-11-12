@@ -1,3 +1,16 @@
+
+
+      .btn-edit-row {
+        background: rgba(99,179,237,.12);
+        border: 1px solid rgba(99,179,237,.3);
+        border-radius: 6px;
+        color: #63b3ed;
+        font-size: 0.75rem;
+        padding: .18rem .4rem;
+        cursor: pointer;
+        line-height: 1;
+      }
+      .btn-edit-row:hover { background: rgba(99,179,237,.22); }
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -2541,10 +2554,15 @@
       if (show) {
         document.getElementById('ct-fecha').value = new Date().toISOString().slice(0,10);
         document.getElementById('ct-semana').focus();
+      } else {
+        editingCTId = null;
+        const saveBtn = document.querySelector('.btn-ct-save');
+        if (saveBtn) saveBtn.textContent = 'Guardar';
       }
     }
 
     let ctShowClics = false;
+    let editingCTId = null;
     function applyCTClicsState() {
       const btn = document.getElementById('ct-clics-toggle-btn');
       if (btn) { btn.textContent = 'Clics: ' + (ctShowClics ? 'on' : 'off'); btn.classList.toggle('on', ctShowClics); }
@@ -2573,14 +2591,42 @@
       document.querySelectorAll('#ct-plat-pills .plat-pill').forEach(el => { el.className = 'plat-pill'; });
     }
 
+    function editCT(id) {
+      const c = contentItems.find(x => x.id === id);
+      if (!c) return;
+      editingCTId = id;
+      /* Fill form */
+      document.getElementById('ct-semana').value  = c.semana  || '';
+      document.getElementById('ct-accion').value  = c.accion  || '';
+      document.getElementById('ct-nombre').value  = c.nombre  || '';
+      document.getElementById('ct-fecha').value   = c.fecha   || '';
+      document.getElementById('ct-vistas').value  = c.vistas  || '';
+      document.getElementById('ct-clics').value   = c.clics   || '';
+      document.getElementById('ct-descargas').value = c.descargas || '';
+      document.getElementById('ct-notas').value   = c.notas   || '';
+      /* Set platform pills */
+      clearCTPills();
+      const plats = (c.plat || '').split(',').map(p => p.trim().toLowerCase());
+      document.querySelectorAll('#ct-plat-pills .plat-pill').forEach(el => {
+        if (plats.includes(el.dataset.plat.toLowerCase())) {
+          el.classList.add('selected');
+          el.classList.add('sel-' + el.dataset.plat.toLowerCase());
+        }
+      });
+      /* Show form + update save button label */
+      document.getElementById('ct-form').style.display = 'block';
+      const saveBtn = document.querySelector('.btn-ct-save');
+      if (saveBtn) saveBtn.textContent = 'Actualizar';
+      document.getElementById('ct-semana').focus();
+    }
+
     function saveCT() {
       const semana = document.getElementById('ct-semana').value.trim();
       const accion = document.getElementById('ct-accion').value.trim();
       if (!semana || !accion) { document.getElementById(semana ? 'ct-accion' : 'ct-semana').focus(); return; }
       let plats = getCTSelectedPlats();
       if (!plats.length) plats = ['Otra'];
-      contentItems.unshift({
-        id:        'c' + Date.now(),
+      const data = {
         semana,
         accion,
         nombre:    document.getElementById('ct-nombre').value.trim(),
@@ -2590,7 +2636,17 @@
         clics:     document.getElementById('ct-clics').value,
         descargas: document.getElementById('ct-descargas').value,
         notas:     document.getElementById('ct-notas').value.trim(),
-      });
+      };
+      if (editingCTId) {
+        /* Update existing item */
+        const idx = contentItems.findIndex(x => x.id === editingCTId);
+        if (idx !== -1) contentItems[idx] = { ...contentItems[idx], ...data };
+        editingCTId = null;
+        const saveBtn = document.querySelector('.btn-ct-save');
+        if (saveBtn) saveBtn.textContent = 'Guardar';
+      } else {
+        contentItems.unshift({ id: 'c' + Date.now(), ...data });
+      }
       ['ct-semana','ct-accion','ct-nombre','ct-vistas','ct-clics','ct-descargas','ct-notas'].forEach(id => {
         const el = document.getElementById(id); if (el) el.value = '';
       });
@@ -2628,7 +2684,10 @@
           <td class="td-num ct-td-clics" style="display:${ctShowClics ? '' : 'none'}">${parseInt(c.clics) ? fmtNum(parseInt(c.clics)) : '—'}</td>
           <td class="td-num">${d || '—'}</td>
           <td class="td-note" title="${esc(c.notas)}">${esc(c.notas) || '—'}</td>
-          <td><button class="btn-del-row" onclick="deleteCT('${c.id}')" title="Eliminar">×</button></td>`;
+          <td style="display:flex;gap:.3rem;align-items:center;">
+            <button class="btn-edit-row" onclick="editCT('${c.id}')" title="Editar">✎</button>
+            <button class="btn-del-row" onclick="deleteCT('${c.id}')" title="Eliminar">×</button>
+          </td>`;
         tbody.appendChild(tr);
       });
       applyCTClicsState();
