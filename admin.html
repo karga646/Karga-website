@@ -6,6 +6,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>Admin — Karga</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1114,7 +1115,18 @@
       margin-bottom: 4px;
     }
 
-  </style>
+  
+      /* ── Analytics charts panel ── */
+      .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+      @media (max-width: 600px) { .analytics-grid { grid-template-columns: 1fr; } }
+      .analytics-chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 16px 12px; }
+      .analytics-chart-card h4 { font-size: 0.78rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+      .analytics-chart-card .ac-sub { font-size: 0.7rem; color: var(--muted); margin-bottom: 12px; }
+      .analytics-chart-wrap { position: relative; height: 160px; }
+      .analytics-chart-full { grid-column: 1 / -1; }
+      .analytics-chart-full .analytics-chart-wrap { height: 180px; }
+
+    </style>
 </head>
 <body>
 
@@ -1478,6 +1490,30 @@
             <div>
               <h3 style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.75rem;">Descargas por contenido</h3>
               <div id="src-cont-list"><p class="src-empty">Registra contenidos en el tracker de abajo para ver el desglose.</p></div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ── Gráficas de Analytics ── -->
+      <details class="detail-panel" id="panel-graficas">
+        <summary>Gráficas <span class="dp-badge">mayo–nov 2026 · App Store</span></summary>
+        <div class="detail-panel-body">
+          <div class="analytics-grid">
+            <div class="analytics-chart-card">
+              <h4>Primeras descargas por mes</h4>
+              <div class="ac-sub">Pico en junio — caída sostenida desde julio</div>
+              <div class="analytics-chart-wrap"><canvas id="ac-descargas"></canvas></div>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Tasa de conversión mensual</h4>
+              <div class="ac-sub">Descargas ÷ Impresiones · caída de 17% → 6%</div>
+              <div class="analytics-chart-wrap"><canvas id="ac-conversion"></canvas></div>
+            </div>
+            <div class="analytics-chart-card analytics-chart-full">
+              <h4>Impresiones vs Descargas — evolución semanal</h4>
+              <div class="ac-sub">Las impresiones se mantienen; las descargas no las convierten</div>
+              <div class="analytics-chart-wrap"><canvas id="ac-diario"></canvas></div>
             </div>
           </div>
         </div>
@@ -2788,6 +2824,104 @@
     }
 
     init();
+
+    // ── Analytics Charts — lazy init when panel opens ──────────────────
+    let analyticsChartsInited = false;
+    document.addEventListener('toggle', function(e) {
+      if (e.target && e.target.id === 'panel-graficas' && e.target.open && !analyticsChartsInited) {
+        analyticsChartsInited = true;
+        initAnalyticsCharts();
+      }
+    }, true);
+    function initAnalyticsCharts() {
+      const months  = ['May','Jun','Jul','Ago','Sep','Oct','Nov'];
+      const descargas  = [14, 47, 4, 5, 6, 18, 5];
+      const impresiones = [86, 268, 132, 148, 192, 235, 82];
+      const conversion = descargas.map((d, i) =>
+        impresiones[i] > 0 ? +(d / impresiones[i] * 100).toFixed(1) : 0);
+
+      const muted = () => '#888';
+      const gridColor = () => 'rgba(255,255,255,.07)';
+
+      const baseOpts = () => ({
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: gridColor() }, ticks: { color: muted(), font: { size: 10 } } },
+          y: { grid: { color: gridColor() }, ticks: { color: muted(), font: { size: 10 } } }
+        }
+      });
+
+      // Chart 1 — Descargas por mes
+      new Chart(document.getElementById('ac-descargas'), {
+        type: 'bar',
+        data: {
+          labels: months,
+          datasets: [{
+            data: descargas,
+            backgroundColor: months.map((_, i) => i === 1 ? 'rgba(224,51,51,.7)' : 'rgba(224,51,51,.3)'),
+            borderColor: months.map((_, i) => i === 1 ? '#E03333' : 'rgba(224,51,51,.6)'),
+            borderWidth: 1.5, borderRadius: 5
+          }]
+        },
+        options: {
+          ...baseOpts(),
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} descargas` } } }
+        }
+      });
+
+      // Chart 2 — Conversión mensual
+      new Chart(document.getElementById('ac-conversion'), {
+        type: 'line',
+        data: {
+          labels: months,
+          datasets: [{
+            data: conversion,
+            borderColor: '#E03333', borderWidth: 2.5,
+            pointBackgroundColor: '#E03333', pointRadius: 4,
+            fill: { target: 'origin', above: 'rgba(224,51,51,.1)' },
+            tension: 0.3
+          }]
+        },
+        options: {
+          ...baseOpts(),
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw}% conversión` } } },
+          scales: {
+            x: { grid: { color: gridColor() }, ticks: { color: muted(), font: { size: 10 } } },
+            y: { grid: { color: gridColor() }, ticks: { color: muted(), font: { size: 10 }, callback: v => v + '%' }, min: 0 }
+          }
+        }
+      });
+
+      // Chart 3 — Impresiones vs Descargas semanal
+      const descArr = [14,0,0,0,3,2,1,3,0,1,0,0,0,0,0,3,0,3,3,1,0,1,2,3,11,3,5,1,3,3,1,0,0,0,1,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,2,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1,0,2,1,0,0,0,0,0,0,7,0,0,0,1,0,0,0,2,0,2,0,0,0,0,0,0,0,0,0,1,0,3,0,1];
+      const imprArr = [21,5,1,6,19,4,6,13,2,4,0,0,0,3,2,18,0,21,20,2,5,8,13,7,36,22,17,13,13,7,2,2,2,0,6,12,17,7,2,4,0,4,0,4,4,2,3,1,4,2,3,1,17,1,13,13,9,8,1,1,3,6,4,1,1,9,2,1,1,0,1,2,10,10,1,9,12,4,4,3,3,3,2,3,8,14,0,2,0,7,1,6,3,2,3,2,0,1,6,3,4,4,7,3,14,15,3,5,13,8,2,7,6,2,1,6,6,4,6,1,10,1,5,3,0,0,2,3,5,13,7,5,14,34,13,7,11,8,3,8,13,14,25,3,2,7,2,12,6,6,14,38,5,1,4,7,5,3,3,8,1,7,2,3,4,4,6,12,6,4,15,4,17,5,19];
+      const size = 7, buckets = [], bDesc = [], bImpr = [];
+      for (let i = 0; i < descArr.length; i += size) {
+        buckets.push('S' + (Math.floor(i / size) + 1));
+        bDesc.push(descArr.slice(i, i + size).reduce((a, b) => a + b, 0));
+        bImpr.push(imprArr.slice(i, i + size).reduce((a, b) => a + b, 0));
+      }
+      new Chart(document.getElementById('ac-diario'), {
+        type: 'bar',
+        data: {
+          labels: buckets,
+          datasets: [
+            { label: 'Impresiones', data: bImpr, backgroundColor: 'rgba(79,110,247,.25)', borderColor: 'rgba(79,110,247,.7)', borderWidth: 1.5, borderRadius: 4, yAxisID: 'yI' },
+            { label: 'Descargas',   data: bDesc, backgroundColor: 'rgba(224,51,51,.55)',  borderColor: '#E03333',               borderWidth: 1.5, borderRadius: 4, yAxisID: 'yD' }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: true, labels: { color: muted(), font: { size: 11 }, boxWidth: 12 } } },
+          scales: {
+            x:  { grid: { color: gridColor() }, ticks: { color: muted(), font: { size: 10 } } },
+            yI: { position: 'left',  grid: { color: gridColor() }, ticks: { color: '#4F6EF7', font: { size: 10 } }, title: { display: true, text: 'Impr.',  color: '#4F6EF7', font: { size: 10 } } },
+            yD: { position: 'right', grid: { display: false },     ticks: { color: '#E03333', font: { size: 10 } }, title: { display: true, text: 'Desc.', color: '#E03333', font: { size: 10 } } }
+          }
+        }
+      });
+    }
   </script>
 </body>
 </html>
