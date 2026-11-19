@@ -1822,10 +1822,9 @@
       if (!error) for (const m of messages) thread.appendChild(renderBubble(m.sender, m.message, m.created_at));
       thread.scrollTop = thread.scrollHeight;
 
-      if (t.unread_by_user) {
-        await sb.from('feedback').update({ unread_by_user: false }).eq('id', t.id);
-        t.unread_by_user = false;
-      }
+      // OJO: unread_by_user es "el USUARIO no ha leído tu respuesta" (lo pone en true el disparador
+      // handle_feedback_message al insertar tu mensaje). Antes aquí se ponía en false al abrir el
+      // ticket, lo que borraba el aviso justo después de responder.
     }
 
     function renderBubble(sender, message, createdAt) {
